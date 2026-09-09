@@ -1,183 +1,367 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { PickCard } from "@/components/pick-card";
+import { RefreshCw } from "lucide-react";
 import { Assistant } from "@/components/assistant";
-import { PICKS, type PickItem } from "@/data/picks";
+import { Crest } from "@/components/crest";
+import { FeaturedPick, pickFeatured } from "@/components/featured-pick";
+import { PickRow } from "@/components/pick-row";
+import { SiteFooter } from "@/components/site-footer";
+import { SiteHeader } from "@/components/site-header";
+import { dayBucket, isWeekend } from "@/lib/art-time";
+import { fetchPicks } from "@/lib/fetch-picks";
+import type { LeagueKey, MarketKey, PickItem } from "@/lib/pick-types";
 
-export const Route = createFileRoute("/")({ component: Home });
+export const Route = createFileRoute("/")({
+  loader: () => fetchPicks(),
+  pendingComponent: BoardSkeleton,
+  component: Home,
+});
 
-type DayF = "hoy" | "manana" | "all";
-type LeagueF = "all" | PickItem["leagueKey"];
+type DayF = "hoy" | "manana" | "finde" | "all";
+type ConfF = "all" | "max" | "alta" | "media";
+type StateF = "all" | "live" | "pending";
 
-function artDay(iso: string) {
-  return new Date(iso).toLocaleDateString("en-CA", {
-    timeZone: "America/Argentina/Buenos_Aires",
-  });
+const LEAGUES: Array<[LeagueKey | "all", string]> = [
+  ["all", "Todas"],
+  ["ucl", "Champions"],
+  ["lib", "Libertadores"],
+  ["suda", "Sudamericana"],
+  ["arg", "Argentina"],
+  ["bra", "Brasil"],
+  ["eng", "Premier"],
+  ["esp", "La Liga"],
+  ["ita", "Serie A"],
+  ["ger", "Bundesliga"],
+  ["fra", "Ligue 1"],
+  ["por", "Portugal"],
+  ["europa", "Europa"],
+];
+
+const MARKETS: Array<[MarketKey | "all", string]> = [
+  ["all", "Todos"],
+  ["1x2", "1X2"],
+  ["btts", "BTTS"],
+  ["ou", "Goles"],
+];
+
+function pickPhase(status: string): "live" | "pending" | "done" {
+  if (status === "finished") return "done";
+  if (!status || status === "notstarted") return "pending";
+  return "live";
 }
-function todayArt() {
-  return new Date().toLocaleDateString("en-CA", {
-    timeZone: "America/Argentina/Buenos_Aires",
-  });
+
+function BoardSkeleton() {
+  return (
+    <div className="mx-auto max-w-5xl space-y-3 px-4 py-16">
+      <div className="h-8 w-48 animate-pulse rounded-lg bg-card" />
+      <div className="h-24 animate-pulse rounded-2xl bg-card" />
+      <div className="h-24 animate-pulse rounded-2xl bg-card" />
+    </div>
+  );
 }
-function tomorrowArt() {
-  const [y, m, d] = todayArt().split("-").map(Number);
-  const next = new Date(y, m - 1, d + 1);
-  const mm = String(next.getMonth() + 1).padStart(2, "0");
-  const dd = String(next.getDate()).padStart(2, "0");
-  return `${next.getFullYear()}-${mm}-${dd}`;
+
+function Chip({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={
+        active
+          ? "min-h-11 shrink-0 rounded-full bg-primary px-4 text-sm font-bold text-primary-fg"
+          : "min-h-11 shrink-0 rounded-full px-4 text-sm font-semibold text-muted shadow-[var(--shadow-border)]"
+      }
+    >
+      {children}
+    </button>
+  );
+}
+
+function FilterSelect({
+  label,
+  value,
+  onChange,
+  options,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  options: Array<[string, string]>;
+}) {
+  return (
+    <label className="flex min-h-11 shrink-0 items-center gap-2 rounded-full border border-primary/35 bg-surface px-3">
+      <span className="text-xs font-semibold text-muted">{label}</span>
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="min-h-11 bg-transparent text-sm font-bold outline-none"
+      >
+        {options.map(([k, l]) => (
+          <option key={k} value={k}>
+            {l}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
 }
 
 function Home() {
+  const payload = Route.useLoaderData();
+  const picks = payload.picks as PickItem[];
   const [day, setDay] = useState<DayF>("hoy");
-  const [league, setLeague] = useState<LeagueF>("all");
+  const [league, setLeague] = useState<LeagueKey | "all">("all");
+  const [market, setMarket] = useState<MarketKey | "all">("all");
+  const [conf, setConf] = useState<ConfF>("all");
+  const [state, setState] = useState<StateF>("all");
+  const [evOnly, setEvOnly] = useState(false);
 
   const filtered = useMemo(() => {
-    const t = todayArt();
-    const tm = tomorrowArt();
-    return PICKS.filter((p) => {
-      const d = artDay(p.kickoff);
-      if (day === "hoy" && d !== t) return false;
-      if (day === "manana" && d !== tm) return false;
+    return picks.filter((p) => {
+      const b = dayBucket(p.kickoff);
+      if (day === "hoy" && b !== "hoy") return false;
+      if (day === "manana" && b !== "manana") return false;
+      if (day === "finde" && !isWeekend(p.kickoff)) return false;
       if (league !== "all" && p.leagueKey !== league) return false;
+      if (market !== "all" && p.marketKey !== market) return false;
+      if (conf === "max" && p.conf < 78) return false;
+      if (conf === "alta" && (p.conf < 72 || p.conf >= 78)) return false;
+      if (conf === "media" && p.conf >= 72) return false;
+      if (state === "live" && pickPhase(p.status) !== "live") return false;
+      if (state === "pending" && pickPhase(p.status) !== "pending") return false;
+      if (evOnly && p.evPct <= 0) return false;
       return true;
-    }).sort((a, b) => b.conf - a.conf);
-  }, [day, league]);
+    });
+  }, [picks, day, league, market, conf, state, evOnly]);
 
-  const hoyN = PICKS.filter((p) => artDay(p.kickoff) === todayArt()).length;
+  const hoyN = picks.filter((p) => dayBucket(p.kickoff) === "hoy").length;
+  const liveN = picks.filter((p) => pickPhase(p.status) === "live").length;
+  const featured = pickFeatured(picks);
 
   return (
-    <div className="min-h-screen bg-bg pb-24 text-fg">
-      <header className="sticky top-0 z-40 border-b border-border bg-bg/95 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3">
-          <a href="/" className="flex items-center gap-2 font-black">
-            <img src="/logo-canal.jpeg" alt="" className="size-9 rounded-full border border-primary/40 object-cover" />
-            Predicciones <span className="text-primary">Pro</span>
-          </a>
-          <a
-            href="https://t.me/"
-            target="_blank"
-            rel="noreferrer"
-            className="rounded-lg bg-tg px-3 py-2 text-xs font-extrabold text-white"
-          >
-            Telegram
-          </a>
-        </div>
-      </header>
+    <div className="min-h-screen bg-bg pb-28 text-fg antialiased">
+      <SiteHeader source={payload.source} />
 
-      <section className="mx-auto grid max-w-6xl gap-8 px-4 py-8 md:grid-cols-[1.2fr_0.8fr] md:items-center">
-        <div>
-        <p className="mb-3 inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-xs font-bold text-primary">
-          En línea · cuotas ≥ 1.50
-        </p>
-        <h1 className="max-w-3xl text-3xl font-black leading-tight tracking-tight md:text-4xl">
-          Picks cruzados con <span className="text-primary">Forebet, FootyStats y AdamChoi</span>
-        </h1>
-        <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted">
-          No se publica el Over 2.5 por default ni el favorito a 1.10. Cada pick tiene
-          probabilidad de modelo, implícita del libro, EV, y qué mercado se descartó.
-        </p>
-        <div className="mt-5 flex flex-wrap gap-3">
-          <div className="rounded-lg border border-border bg-card px-4 py-3">
-            <p className="text-xl font-black text-primary">{hoyN}</p>
-            <p className="text-[10px] font-bold tracking-wide text-muted">PICKS HOY</p>
+      <section className="mx-auto flex max-w-6xl flex-col items-center gap-8 px-4 pt-8 pb-8 md:flex-row md:items-center md:justify-between">
+        <div className="order-2 w-full min-w-0 flex-1 md:order-1">
+          <p className="mb-3 flex items-center gap-2 text-xs font-semibold tracking-wide text-muted">
+            <span className="live-dot" />
+            En línea · modelo BSD
+          </p>
+          <h1 className="max-w-xl text-4xl font-black tracking-tight md:text-5xl">
+            Predicciones<span className="text-primary"> Pro</span>
+          </h1>
+          <p className="mt-2 text-base font-medium text-muted">Pronósticos de fútbol. Un pick por partido.</p>
+
+          <div className="mt-6 flex max-w-lg overflow-hidden rounded-xl bg-card shadow-[var(--shadow-border)]">
+            <Stat n={hoyN} label="Picks hoy" />
+            <Stat n={liveN} label="En vivo" />
+            <Stat n={picks.length} label="Total" last />
           </div>
-          <div className="rounded-lg border border-border bg-card px-4 py-3">
-            <p className="text-xl font-black text-primary">{PICKS.length}</p>
-            <p className="text-[10px] font-bold tracking-wide text-muted">TOTAL</p>
-          </div>
-          <div className="rounded-lg border border-border bg-card px-4 py-3">
-            <p className="text-xl font-black text-primary">1.50+</p>
-            <p className="text-[10px] font-bold tracking-wide text-muted">CUOTA MÍN.</p>
-          </div>
+
+          <a
+            href="#picks"
+            className="mt-6 inline-flex min-h-11 items-center rounded-full bg-primary px-5 text-sm font-bold text-primary-fg"
+          >
+            Ver picks del día
+          </a>
         </div>
-        </div>
-        <div className="relative mx-auto aspect-square w-full max-w-xs overflow-hidden rounded-lg border-2 border-primary/40 bg-surface">
-          <img src="/logo-canal.jpeg" alt="" className="relative z-10 mx-auto mt-[12%] h-[70%] w-[70%] object-contain" />
-          <div className="absolute inset-x-0 bottom-0 z-20 flex items-center justify-between bg-black/70 px-3 py-2 text-[11px] font-bold text-muted">
-            <span>Modelo en vivo</span>
-            <span>Predicciones Pro</span>
-          </div>
+
+        <div className="order-1 size-52 shrink-0 overflow-hidden rounded-3xl shadow-[var(--shadow-mascot)] md:order-2 md:size-60">
+          <img
+            src="/logo-canal.jpeg"
+            alt="Mascota Predicciones Pro"
+            className="size-full object-cover object-top"
+          />
         </div>
       </section>
 
-      <div className="mx-auto max-w-6xl px-4">
-        <div className="mb-4 rounded-lg border border-border bg-card p-4 text-sm leading-relaxed text-muted">
-          <p className="font-bold text-fg">Cómo se arma cada pick</p>
-          <p className="mt-1">
-            Forebet aporta 1X2, media de goles y BTTS. FootyStats aporta cuotas y H2H. Las
-            rachas se leen como tendencias tipo AdamChoi. Si el 1 está a 1.20, se busca el
-            mercado ≥ 1.50 que el modelo sí justifique.
-          </p>
-        </div>
+      <div className="mx-auto max-w-6xl space-y-10 px-4">
+        {featured && <FeaturedPick p={featured} />}
 
-        <div className="mb-3 flex flex-wrap gap-2">
-          {(
-            [
-              ["hoy", "Hoy"],
-              ["manana", "Mañana"],
-              ["all", "Todos"],
-            ] as const
-          ).map(([k, l]) => (
-            <button
-              key={k}
-              type="button"
-              onClick={() => setDay(k)}
-              className={
-                day === k
-                  ? "min-h-11 rounded-full bg-primary px-4 text-sm font-extrabold text-primary-fg"
-                  : "min-h-11 rounded-full border border-border px-4 text-sm font-bold text-muted"
-              }
-            >
-              {l}
-            </button>
-          ))}
-        </div>
-        <div className="mb-6 flex flex-wrap gap-2">
-          {(
-            [
-              ["all", "Todas"],
-              ["ucl", "UCL"],
-              ["lib", "Libertadores"],
-              ["bra", "Brasil/Suda"],
-              ["por", "Portugal"],
-            ] as const
-          ).map(([k, l]) => (
-            <button
-              key={k}
-              type="button"
-              onClick={() => setLeague(k)}
-              className={
-                league === k
-                  ? "min-h-11 rounded-full bg-primary px-3 text-xs font-extrabold text-primary-fg"
-                  : "min-h-11 rounded-full border border-border px-3 text-xs font-bold text-muted"
-              }
-            >
-              {l}
-            </button>
-          ))}
-        </div>
+        <section id="picks" className="scroll-mt-20">
+          <h2 className="text-2xl font-semibold tracking-tight">Picks</h2>
+          <p className="mt-1 text-sm text-muted">Tocá un partido para ver el análisis.</p>
 
-        {filtered.length === 0 ? (
-          <p className="py-16 text-center text-muted">No hay picks ≥ 1.50 para este filtro.</p>
-        ) : (
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-            {filtered.map((p) => (
-              <PickCard key={p.id} p={p} />
+          <div className="mt-5 flex flex-wrap gap-2">
+            {(
+              [
+                ["hoy", "Hoy"],
+                ["manana", "Mañana"],
+                ["finde", "Finde"],
+                ["all", "Todos"],
+              ] as const
+            ).map(([k, l]) => (
+              <Chip key={k} active={day === k} onClick={() => setDay(k)}>
+                {l}
+              </Chip>
             ))}
+            <Chip active={state === "live"} onClick={() => setState(state === "live" ? "all" : "live")}>
+              En vivo
+            </Chip>
+            <Chip active={evOnly} onClick={() => setEvOnly((v) => !v)}>
+              Solo EV+
+            </Chip>
           </div>
-        )}
 
-        <p className="mt-10 rounded-lg border border-danger/25 bg-danger/5 p-4 text-xs text-muted">
-          <strong className="text-danger">Aviso:</strong> Educativo. Fuentes públicas (Forebet,
-          FootyStats, tendencias). Cuotas de consenso. No es consejo financiero. +18.
-        </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <FilterSelect
+              label="Liga"
+              value={league}
+              onChange={(v) => setLeague(v as LeagueKey | "all")}
+              options={LEAGUES}
+            />
+            <FilterSelect
+              label="Mercado"
+              value={market}
+              onChange={(v) => setMarket(v as MarketKey | "all")}
+              options={MARKETS}
+            />
+            <FilterSelect
+              label="Confianza"
+              value={conf}
+              onChange={(v) => setConf(v as ConfF)}
+              options={[
+                ["all", "Todas"],
+                ["max", "Máxima"],
+                ["alta", "Alta"],
+                ["media", "Media"],
+              ]}
+            />
+          </div>
+
+          {payload.error && (
+            <p className="mt-4 rounded-xl bg-danger/10 px-3 py-2 text-xs text-danger">
+              BSD no respondió ({payload.error}). Mostrando tablero de respaldo.
+            </p>
+          )}
+
+          {filtered.length === 0 ? (
+            <p className="py-16 text-center text-muted">
+              No hay picks ≥ 1.50 para este filtro. Probá Todos o apagá Solo EV+.
+            </p>
+          ) : (
+            <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+              {filtered.map((p) => (
+                <PickRow key={p.id} p={p} />
+              ))}
+            </div>
+          )}
+
+          <p className="mt-6 flex items-start gap-2 text-xs text-muted">
+            <RefreshCw className="mt-0.5 size-3.5 shrink-0" />
+            BSD · {new Date(payload.generatedAt).toLocaleTimeString("es-AR")} · min 1.50
+          </p>
+        </section>
+
+        <BoardSection picks={picks} />
+
+        <section id="como" className="scroll-mt-20">
+          <h2 className="text-2xl font-semibold tracking-tight">Cómo se arma</h2>
+          <div className="mt-5 grid gap-3 sm:grid-cols-3">
+            <Step n="01" title="Modelo BSD">
+              1X2, xG, BTTS y goles. Un mercado por partido.
+            </Step>
+            <Step n="02" title="Cuota">
+              EV = modelo × cuota − 1. Se publica el mercado más limpio ≥ 1.50.
+            </Step>
+            <Step n="03" title="Regla 1.50">
+              Nada de favoritos a 1.10. Over 2.5 no entra automático.
+            </Step>
+          </div>
+          <p className="mt-5 text-xs text-muted">+18 · Educativo. No es consejo financiero.</p>
+        </section>
       </div>
 
-      <footer className="mt-10 border-t border-border py-6 text-center text-xs text-muted">
-        Predicciones Pro · sin stakes · cuota mínima 1.50
-      </footer>
+      <SiteFooter />
+      <Assistant picks={picks} />
+    </div>
+  );
+}
 
-      <Assistant />
+function BoardSection({ picks }: { picks: PickItem[] }) {
+  const live = picks.filter((p) => pickPhase(p.status) === "live").length;
+  const pending = picks.filter((p) => pickPhase(p.status) === "pending").length;
+  const done = picks.filter((p) => pickPhase(p.status) === "done").length;
+
+  return (
+    <section id="tablero" className="scroll-mt-20">
+      <h2 className="text-2xl font-semibold tracking-tight">Tablero</h2>
+      <div className="mt-4 flex max-w-lg overflow-hidden rounded-xl bg-card shadow-[var(--shadow-border)]">
+        <Stat n={pending} label="Por jugar" />
+        <Stat n={live} label="En vivo" />
+        <Stat n={done} label="Final" last />
+      </div>
+
+      <ul className="mt-5 overflow-hidden rounded-xl bg-card shadow-[var(--shadow-border)]">
+        {picks.slice(0, 12).map((p) => {
+          const phase = pickPhase(p.status);
+          const label = phase === "live" ? "En vivo" : phase === "done" ? "Final" : "Por jugar";
+          const hasScore = p.homeScore != null && p.awayScore != null;
+          return (
+            <li
+              key={p.id}
+              className="flex items-center gap-3 border-t border-border px-3 py-2.5 first:border-t-0"
+            >
+              <div className="flex shrink-0 items-center gap-1">
+                <Crest name={p.home} src={p.homeCrest} size="sm" />
+                <Crest name={p.away} src={p.awayCrest} size="sm" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-semibold">
+                  {p.home}
+                  {hasScore ? (
+                    <span className="mx-1.5 tabular-nums text-muted">
+                      {p.homeScore}–{p.awayScore}
+                    </span>
+                  ) : (
+                    <span className="mx-1.5 text-muted">vs</span>
+                  )}
+                  {p.away}
+                </p>
+                <p className="truncate text-xs text-accent">
+                  {p.market} · {p.odds.toFixed(2)}
+                </p>
+              </div>
+              <p
+                className={
+                  phase === "live"
+                    ? "shrink-0 text-xs font-semibold text-danger"
+                    : "shrink-0 text-xs font-semibold text-muted"
+                }
+              >
+                {label}
+              </p>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  );
+}
+
+function Stat({ n, label, last }: { n: number | string; label: string; last?: boolean }) {
+  return (
+    <div className={`flex-1 px-3 py-4 text-center ${last ? "" : "border-r border-border"}`}>
+      <p className="text-xl font-extrabold tabular-nums tracking-tight">{n}</p>
+      <p className="mt-1 text-xs font-medium text-muted">{label}</p>
+    </div>
+  );
+}
+
+function Step({ n, title, children }: { n: string; title: string; children: ReactNode }) {
+  return (
+    <div className="rounded-xl bg-card p-4 shadow-[var(--shadow-border)]">
+      <p className="font-mono text-xs text-primary">{n}</p>
+      <p className="mt-2 font-semibold">{title}</p>
+      <p className="mt-1 text-sm leading-relaxed text-muted">{children}</p>
     </div>
   );
 }

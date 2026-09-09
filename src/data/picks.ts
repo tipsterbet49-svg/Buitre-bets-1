@@ -1,40 +1,27 @@
-export type SourceTag = "Forebet" | "FootyStats" | "AdamChoi";
+import type { PickItem } from "@/lib/pick-types";
 
-export type PickItem = {
-  id: string;
-  league: string;
-  leagueKey: "ucl" | "lib" | "por" | "bra";
-  kickoff: string;
-  home: string;
-  away: string;
-  market: string;
-  odds: number;
-  impliedPct: number;
-  modelPct: number;
-  evPct: number;
-  conf: number;
-  pH: number;
-  pD: number;
-  pA: number;
-  sources: SourceTag[];
-  bullets: string[];
-  analysis: string;
-  rejected: string;
-};
+export type { PickItem } from "@/lib/pick-types";
+export { MIN_ODDS } from "@/lib/pick-types";
 
 const implied = (odds: number) => Math.round((1 / odds) * 1000) / 10;
 const ev = (p: number, odds: number) =>
   Math.round((p * (odds - 1) - (1 - p)) * 1000) / 10;
 
+/** Fallback curated board if BSD is down. */
 export const PICKS: PickItem[] = [
   {
     id: "liv-atm",
-    league: "UCL",
+    eventId: 0,
+    league: "Champions",
     leagueKey: "ucl",
     kickoff: "2026-09-09T19:00:00.000Z",
+    status: "finished",
     home: "Liverpool",
     away: "Atlético Madrid",
-    market: "Ambos marcan (BTTS Sí)",
+    homeCrest: "https://media.api-sports.io/football/teams/40.png",
+    awayCrest: "https://media.api-sports.io/football/teams/530.png",
+    market: "Ambos marcan",
+    marketKey: "btts",
     odds: 1.58,
     impliedPct: implied(1.58),
     modelPct: 73,
@@ -43,303 +30,13 @@ export const PICKS: PickItem[] = [
     pH: 0.36,
     pD: 0.29,
     pA: 0.35,
-    sources: ["Forebet", "FootyStats"],
-    bullets: [
-      "Forebet: 73% BTTS / marcador 2-1 / media 2.83 goles",
-      "H2H BSD: 9 partidos, media 2.89 goles (4-2-3)",
-      "FootyStats 1X2: 1.70 / 4.10 / 4.60 — Liverpool no es value",
-    ],
+    xgHome: 1.6,
+    xgAway: 1.2,
+    scoreline: "2-1",
+    sources: ["BSD"],
+    bullets: ["Fallback estático — reconectá BSD para el tablero en vivo"],
     analysis:
-      "Acá el error típico es ir al 1 de Liverpool @ 1.69. Forebet le da apenas 36% al local (Atleti 35%, empate 29%): el mercado está mucho más corto que el modelo. Donde sí hay acuerdo y precio es BTTS: Forebet 73% ambos marcan y 2-1, contra una implícita del 63% @ 1.58. El H2H (media 2.89) acompaña un partido abierto, no un 1-0 de favorito. Pick: BTTS Sí, no el 1.",
-    rejected: "Se descarta Liverpool gana @ 1.69: Forebet 36% vs ~59% implícita.",
-  },
-  {
-    id: "nap-ars",
-    league: "UCL",
-    leagueKey: "ucl",
-    kickoff: "2026-09-09T19:00:00.000Z",
-    home: "Napoli",
-    away: "Arsenal",
-    market: "Menos de 2.5 goles",
-    odds: 1.88,
-    impliedPct: implied(1.88),
-    modelPct: 68,
-    evPct: ev(0.68, 1.88),
-    conf: 80,
-    pH: 0.24,
-    pD: 0.32,
-    pA: 0.44,
-    sources: ["Forebet", "FootyStats", "AdamChoi"],
-    bullets: [
-      "Forebet: 0-1, media 1.97, BTTS No 57%",
-      "Tendencia: Arsenal Under 2.5 en sus últimos 4 UCL de visitante",
-      "Napoli 1 ganó de 6 en UCL; Arsenal invicto 15 en UCL",
-      "H2H: 4 partidos, media 1.75, Arsenal ganó 3",
-    ],
-    analysis:
-      "Este no es un Over. Forebet proyecta 0-1 con media 1.97 (Poisson Under ~68%). Arsenal viene de 4 visitas UCL seguidas con menos de 2.5, y el H2H es bajo (1.75). La cuota del Under @ 1.88 implica 53%: hay hueco claro. El 2 de Arsenal @ 1.74 parece “lógico” (favorito, racha), pero Forebet le da 44% contra ~57% implícita: no es value. El pick es el partido trabado, no el ganador.",
-    rejected: "Se descarta Arsenal gana @ 1.74: 44% modelo vs 57% implícita.",
-  },
-  {
-    id: "spo-gal",
-    league: "UCL",
-    leagueKey: "ucl",
-    kickoff: "2026-09-09T19:00:00.000Z",
-    home: "Sporting CP",
-    away: "Galatasaray",
-    market: "BTTS No",
-    odds: 2.3,
-    impliedPct: implied(2.3),
-    modelPct: 57,
-    evPct: ev(0.57, 2.3),
-    conf: 74,
-    pH: 0.53,
-    pD: 0.25,
-    pA: 0.22,
-    sources: ["Forebet", "AdamChoi"],
-    bullets: [
-      "Forebet: 3-0 Sporting, media 3.30, BTTS No 57%",
-      "Galatasaray: 0 goles en 4 visitas UCL seguidas (tendencia AdamChoi)",
-      "Sporting @ 1.83 está casi en línea (53% vs 55%) — poco edge",
-    ],
-    analysis:
-      "Forebet ve 3-0, no 2-1: goles del local y portería visitante cerrada. Galatasaray no marcó en 4 UCL de visitante; eso pinta de verde el BTTS No y de rojo el BTTS Sí @ 1.57 (implícita 64% vs 43% del modelo). Sporting gana @ 1.83 es razonable pero sin valor. BTTS No @ 2.30 paga 57% modelo contra 43% implícita. El Over 2.5 @ 1.63 también pega con un 3-0, pero el edge más limpio es que Gala no marque.",
-    rejected: "Se descarta BTTS Sí @ 1.57 y Sporting @ 1.83 (cuota justa, sin edge).",
-  },
-  {
-    id: "stu-vik",
-    league: "UCL",
-    leagueKey: "ucl",
-    kickoff: "2026-09-09T16:45:00.000Z",
-    home: "Stuttgart",
-    away: "Viking",
-    market: "Ambos marcan (BTTS Sí)",
-    odds: 1.58,
-    impliedPct: implied(1.58),
-    modelPct: 74,
-    evPct: ev(0.74, 1.58),
-    conf: 76,
-    pH: 0.36,
-    pD: 0.37,
-    pA: 0.27,
-    sources: ["Forebet"],
-    bullets: [
-      "Forebet: empate 3-3, media 3.07, BTTS Sí 74%",
-      "1X2 de Stuttgart @ 1.24 — debajo del mínimo 1.50",
-      "Over 2.5 @ 1.26 también queda fuera por cuota",
-    ],
-    analysis:
-      "Stuttgart es claro favorito en el precio (1.24) y por eso no se publica: regla 1.50. Forebet no ve un 3-0 seco, ve 3-3 (36-37-27) y 74% BTTS. Eso encaja con un cup tie donde el inferior también llega al área. BTTS @ 1.58 implica 63%; el modelo está 11 puntos arriba. Over 3.5 @ 1.66 es tentador por el 3-3, pero P(4+ goles) con media 3.07 no supera con claridad la implícita.",
-    rejected: "Se descarta Stuttgart gana @ 1.24 y Over 2.5 @ 1.26 (cuota < 1.50).",
-  },
-  {
-    id: "pal-ldu",
-    league: "Libertadores",
-    leagueKey: "lib",
-    kickoff: "2026-09-09T22:00:00.000Z",
-    home: "Palmeiras",
-    away: "LDU",
-    market: "Menos de 2.5 goles",
-    odds: 1.86,
-    impliedPct: implied(1.86),
-    modelPct: 58,
-    evPct: ev(0.58, 1.86),
-    conf: 68,
-    pH: 0.62,
-    pD: 0.24,
-    pA: 0.14,
-    sources: ["Forebet", "FootyStats"],
-    bullets: [
-      "Forebet: 1-0 Palmeiras, media 2.35, BTTS No 57%",
-      "Palmeiras @ 1.25 — se descarta por piso 1.50",
-      "H2H corto (4 pj, media 3.5): se pondera menos que el modelo de liga",
-    ],
-    analysis:
-      "En Libertadores Palmeiras suele ir corto de cuota. 1.25 no se toca. Forebet apunta 1-0 y media 2.35: escenario de control, no de festival. Under 2.5 @ 1.86 queda del lado correcto de 1.50 y del modelo. El H2H (3.5 goles en 4 partidos) tira para el otro lado, por eso la confianza no es Máxima: son pocos juegos. BTTS No @ 1.44 queda afuera por cuota. El pick es el Under, no el 1.",
-    rejected: "Se descarta Palmeiras gana @ 1.25 y BTTS No @ 1.44.",
-  },
-  {
-    id: "san-cam",
-    league: "Sudamericana",
-    leagueKey: "bra",
-    kickoff: "2026-09-09T22:00:00.000Z",
-    home: "Santos",
-    away: "Atlético Mineiro",
-    market: "Más de 2.5 goles",
-    odds: 2.3,
-    impliedPct: implied(2.3),
-    modelPct: 58,
-    evPct: ev(0.58, 2.3),
-    conf: 70,
-    pH: 0.4,
-    pD: 0.32,
-    pA: 0.28,
-    sources: ["FootyStats"],
-    bullets: [
-      "H2H largo: 48 partidos, media 2.94 goles",
-      "1X2 abierto 2.27 / 3.12 / 3.17 — no hay favorito claro",
-      "Under 2.5 @ 1.60 está caro si la media histórica es 2.94",
-    ],
-    analysis:
-      "Acá sí hay Over, porque los números lo dicen, no porque “siempre Over”. 48 H2H con media 2.94 empujan P(Over 2.5) cerca del 58-60%. El mercado paga 2.30 (implícita 43%). El Under @ 1.60 es la trampa: está alineado con un partido cerrado que el historial no muestra. El 1X2 está demasiado parejo para forzar un ganador. Pick: Over 2.5.",
-    rejected: "Se descarta Under 2.5 @ 1.60 (choca con media H2H 2.94).",
-  },
-  {
-    id: "mor-ben",
-    league: "Liga Portugal",
-    leagueKey: "por",
-    kickoff: "2026-09-09T19:45:00.000Z",
-    home: "Moreirense",
-    away: "Benfica",
-    market: "BTTS No",
-    odds: 1.61,
-    impliedPct: implied(1.61),
-    modelPct: 62,
-    evPct: ev(0.62, 1.61),
-    conf: 72,
-    pH: 0.08,
-    pD: 0.14,
-    pA: 0.78,
-    sources: ["Forebet", "AdamChoi"],
-    bullets: [
-      "Forebet: Benfica invicto 38 seguidos en Liga Portugal",
-      "Benfica @ 1.16 — se descarta (cuota < 1.50)",
-      "Perfil de favorito visitante: gana y deja a Moreirense en 0",
-    ],
-    analysis:
-      "No se publica Benfica @ 1.16 aunque la racha de 38 invictos sea real: no hay retorno. El mercado accesible es BTTS No @ 1.61. En este tipo de desnivel el inferior rara vez marca y el grande cierra el partido. Over 2.5 @ 1.44 también queda corto. El fundamento es la jerarquía + la regla de cuota mínima, no “siempre gana el grande a cualquier precio”.",
-    rejected: "Se descarta Benfica gana @ 1.16 y Over 2.5 @ 1.44.",
-  },
-  {
-    id: "est-cor",
-    league: "Libertadores",
-    leagueKey: "lib",
-    kickoff: "2026-09-10T00:30:00.000Z",
-    home: "Estudiantes",
-    away: "Corinthians",
-    market: "Gana Estudiantes",
-    odds: 2.24,
-    impliedPct: implied(2.24),
-    modelPct: 48,
-    evPct: ev(0.48, 2.24),
-    conf: 73,
-    pH: 0.44,
-    pD: 0.35,
-    pA: 0.21,
-    sources: ["Forebet"],
-    bullets: [
-      "Forebet Pick of the day (Libertadores): 1 Estudiantes",
-      "Estudiantes invicto en 8 locales recientes de Libertadores",
-      "H2H corto (2 pj, media 1.0): partido de pocos goles",
-    ],
-    analysis:
-      "Uno de los pocos 1X2 que sí pasa el filtro: 2.24 ≥ 1.50 y Forebet lo marca como pick del día. La racha local en copa (8 invictos) sostiene el 1 mejor que un Over. Under 2.5 @ 1.39 queda afuera por cuota; BTTS No @ 1.54 es plan B si no querés el resultado. El 1 de Estudiantes tiene precio porque el mercado no lo trata como superfavorito.",
-    rejected: "Se descarta Under 2.5 @ 1.39 (cuota < 1.50).",
-  },
-  {
-    id: "bay-bod",
-    league: "UCL",
-    leagueKey: "ucl",
-    kickoff: "2026-09-10T19:00:00.000Z",
-    home: "Bayern",
-    away: "Bodø/Glimt",
-    market: "Ambos marcan (BTTS Sí)",
-    odds: 1.65,
-    impliedPct: implied(1.65),
-    modelPct: 62,
-    evPct: ev(0.62, 1.65),
-    conf: 71,
-    pH: 0.78,
-    pD: 0.12,
-    pA: 0.1,
-    sources: ["Forebet", "AdamChoi"],
-    bullets: [
-      "Bodø/Glimt: Over 2.5 en 12 UCL seguidos",
-      "Bodø/Glimt: invicto en 10 de 11 UCL",
-      "Bayern @ 1.10 y Over 2.5 @ 1.12 — ambos < 1.50",
-    ],
-    analysis:
-      "No se publica Bayern ni el Over 2.5: las dos cuotas están regaladas y no pagan. La vía 1.50+ es BTTS @ 1.65. Bayern marca casi siempre en casa; Bodø en UCL produce partidos de 3+ goles de forma sistemática (12/12 Over). Eso no garantiza que marquen ellos, pero la tendencia de “partido abierto + inferior competitivo” sostiene el Sí mejor que un -3.5 que el mercado ya comió.",
-    rejected: "Se descarta Bayern @ 1.10, Over 2.5 @ 1.12 y Over 3.5 @ 1.38.",
-  },
-  {
-    id: "psv-sha",
-    league: "UCL",
-    leagueKey: "ucl",
-    kickoff: "2026-09-10T16:45:00.000Z",
-    home: "PSV",
-    away: "Shakhtar",
-    market: "Más de 3.5 goles",
-    odds: 2.14,
-    impliedPct: implied(2.14),
-    modelPct: 57,
-    evPct: ev(0.57, 2.14),
-    conf: 75,
-    pH: 0.55,
-    pD: 0.25,
-    pA: 0.2,
-    sources: ["Forebet", "FootyStats"],
-    bullets: [
-      "Forebet: 3-1, media 3.98, BTTS Sí 65%",
-      "H2H único reciente: 5 goles",
-      "PSV @ 1.42 y Over 2.5 @ 1.43 — fuera por 1.50",
-    ],
-    analysis:
-      "Forebet pone media 3.98 y 3-1. El Over 2.5 @ 1.43 no se publica. El mercado que todavía paga es Over 3.5 @ 2.14 (implícita 47%). Con λ ≈ 4, P(4+ goles) ronda 57-60%. PSV viene de 3 derrotas UCL seguidas, o sea no es un 1 “bombero”: el valor está en los goles, no en el ganador corto. BTTS @ 1.60 es plan B (65% Forebet).",
-    rejected: "Se descarta PSV gana @ 1.42 y Over 2.5 @ 1.43.",
-  },
-  {
-    id: "mun-sab",
-    league: "UCL",
-    leagueKey: "ucl",
-    kickoff: "2026-09-10T19:00:00.000Z",
-    home: "Manchester United",
-    away: "Sabah",
-    market: "Más de 3.5 goles",
-    odds: 1.65,
-    impliedPct: implied(1.65),
-    modelPct: 58,
-    evPct: ev(0.58, 1.65),
-    conf: 72,
-    pH: 0.82,
-    pD: 0.12,
-    pA: 0.06,
-    sources: ["FootyStats"],
-    bullets: [
-      "United @ 1.11 y Over 2.5 @ 1.24 — se descartan",
-      "Desnivel de plantel tipo ronda previa: el 2.5 ya está quemado",
-      "Over 3.5 @ 1.65 es el primer precio que cumple 1.50",
-    ],
-    analysis:
-      "No hay debate de 1X2: United 1.11 no se toca. Over 2.5 @ 1.24 tampoco. En mismatches el libro se cubre hasta 2.5; el hueco suele estar un piso más arriba. Over 3.5 @ 1.65 pide 3+ goles del favorito (3-0 / 4-0), que es el escenario base. BTTS Sí @ 1.94 asume que Sabah marca en Old Trafford en UCL: menos probable. Pick: Over 3.5.",
-    rejected: "Se descarta United @ 1.11 y Over 2.5 @ 1.24.",
-  },
-  {
-    id: "fen-rom",
-    league: "UCL",
-    leagueKey: "ucl",
-    kickoff: "2026-09-10T16:45:00.000Z",
-    home: "Fenerbahçe",
-    away: "Roma",
-    market: "Gana Roma",
-    odds: 2.15,
-    impliedPct: implied(2.15),
-    modelPct: 40,
-    evPct: ev(0.4, 2.15),
-    conf: 66,
-    pH: 0.38,
-    pD: 0.22,
-    pA: 0.4,
-    sources: ["Forebet", "FootyStats"],
-    bullets: [
-      "Forebet: 38-22-40, predice 2 (1-2), media 2.84",
-      "FootyStats: Fener 3.25 / Empate 3.48 / Roma 2.06-2.15",
-      "BTTS @ 1.60: Forebet 52% vs implícita 62% — sin value",
-    ],
-    analysis:
-      "Partido parejo. Forebet se inclina a Roma 1-2 (40% visitante vs 38% local). Roma @ 2.15 implica 46%: el edge es chico, por eso la confianza es Media-Alta, no Máxima. No se fuerza Over 2.5 @ 1.74 (media 2.84, implícita similar) ni BTTS @ 1.60 (el modelo no supera al libro). Si no te cierra el 2, el pase es no jugarlo: acá no hay un Over “regalado”.",
-    rejected: "Se descarta BTTS Sí @ 1.60 (52% vs 62% implícita).",
+      "El 1 de Liverpool no es value. El mercado ≥ 1.50 es BTTS.",
+    rejected: "Se descarta Liverpool gana @ 1.69.",
   },
 ];
-
-export const MIN_ODDS = 1.5;

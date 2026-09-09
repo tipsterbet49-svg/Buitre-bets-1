@@ -1,0 +1,36 @@
+{
+  "url": "http://127.0.0.1:8080/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "Predicciones Pro",
+      "hasCanvas": false,
+      "bodyTextLen": 2172,
+      "bodyTextHash": "e896bd03229febffba42b044e1b3ff92a0b7cea39641fbece2ad3863ed72dd77",
+      "bodyTextPrefix": "Predicciones Pro MODELO BSD EN VIVO Picks Destacado Tablero Cómo",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "Predicciones Pro",
+      "hasCanvas": false,
+      "bodyTextLen": 2116,
+      "bodyTextHash": "0cf8096ba3a8e628a6ae6477db72e4c92bbc3f6b8816a721afcf2cb909e88c20",
+      "bodyTextPrefix": "Predicciones Pro Telegram En línea · modelo BSD Predicciones Pro",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/app-builder-preview.json"
+}

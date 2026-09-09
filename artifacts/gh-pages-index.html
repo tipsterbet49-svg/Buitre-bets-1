@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Predicciones Pro</title>
+<meta name="theme-color" content="#07140c"/>
+<link rel="icon" href="logo-canal.jpeg"/>
+<style>
+:root{--verde:#00c853;--negro:#07140c;--card:#1a2e20;--borde:#2e4a2e;--texto:#e8f5e9;--muted:#8fb99a;--tg:#2AABEE;--soft:rgba(0,200,83,.14)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,Segoe UI,Roboto,sans-serif;background:var(--negro);color:var(--texto);line-height:1.45}
+a{color:inherit;text-decoration:none}button,input{font-family:inherit}
+.wrap{max-width:1100px;margin:0 auto;padding:0 1rem 2rem}
+.top{position:sticky;top:0;z-index:20;background:rgba(7,20,12,.95);border-bottom:1px solid var(--borde)}
+.top-in{max-width:1100px;margin:0 auto;padding:.7rem 1rem;display:flex;justify-content:space-between;align-items:center}
+.brand{font-weight:900;display:flex;align-items:center;gap:.5rem}.brand b{color:var(--verde)}
+.brand img{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid rgba(0,200,83,.4)}
+.btn{border:none;border-radius:10px;padding:.5rem .9rem;font-weight:800;font-size:.8rem;cursor:pointer;background:var(--tg);color:#fff}
+.hero{display:grid;grid-template-columns:1.2fr .8fr;gap:1.2rem;align-items:center;padding-top:1.4rem}
+@media(max-width:800px){.hero{grid-template-columns:1fr}}
+.hero h1{font-size:clamp(1.4rem,4vw,2rem);font-weight:900;margin:.5rem 0}
+.hero h1 span{color:var(--verde)}
+.hero p{color:var(--muted);max-width:560px}
+.stats{display:flex;gap:.5rem;flex-wrap:wrap;margin:1rem 0}
+.stat{background:var(--card);border:1px solid var(--borde);border-radius:12px;padding:.6rem .9rem}
+.stat strong{display:block;color:var(--verde);font-size:1.2rem}
+.stat small{font-size:.65rem;color:var(--muted);font-weight:700}
+.stage{position:relative;border-radius:18px;overflow:hidden;border:2px solid rgba(0,200,83,.4);background:#061008;aspect-ratio:1;max-width:280px;margin:0 auto}
+.stage img{width:78%;height:78%;object-fit:contain;display:block;margin:11% auto}
+.stage-bar{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.72);padding:8px 12px;display:flex;justify-content:space-between;font-size:.68rem;font-weight:700;color:var(--muted)}
+.filters{display:flex;flex-wrap:wrap;gap:.35rem;margin:.6rem 0}
+.fbtn{background:var(--card);border:1px solid var(--borde);color:var(--muted);padding:.4rem .8rem;border-radius:999px;font-size:.75rem;font-weight:700;cursor:pointer}
+.fbtn.active{background:var(--verde);border-color:var(--verde);color:#04210f}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:.85rem}
+.card{background:var(--card);border:1px solid var(--borde);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:9px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:.5rem}
+.chip{font-size:.62rem;font-weight:800;color:#f6cf6b;background:rgba(255,214,0,.1);border:1px solid rgba(255,214,0,.3);border-radius:999px;padding:3px 8px}
+.time{font-size:.66rem;color:var(--muted);font-weight:600}
+.conf{display:flex;align-items:center;gap:8px;padding:6px 10px;background:rgba(0,0,0,.28);border-radius:10px}
+.cl{font-size:.58rem;font-weight:700;color:rgba(255,255,255,.55);text-transform:uppercase}
+.stars{flex:1;text-align:center;color:rgba(255,255,255,.16);letter-spacing:2px}.stars .on{color:var(--verde)}
+.lvl{font-size:.65rem;font-weight:800;padding:2px 7px;border-radius:6px;background:var(--soft);color:var(--verde)}
+.teams{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.team{flex:1;text-align:center;font-weight:800;font-size:.9rem}
+.vs{width:30px;height:30px;border-radius:50%;background:#07140c;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:900;color:var(--muted)}
+.nums{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;text-align:center;font-size:.75rem}
+.nums div{background:rgba(0,0,0,.25);border-radius:8px;padding:6px}
+.nums b{display:block;color:var(--verde)}
+.rec{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--borde);padding-top:10px}
+.rec small{font-size:.58rem;font-weight:700;color:var(--muted);text-transform:uppercase}
+.pick{font-size:.92rem;font-weight:800}
+.odds{font-size:1.2rem;font-weight:900;color:var(--verde);background:var(--soft);border:1px solid rgba(0,200,83,.4);padding:6px 11px;border-radius:10px}
+.why{font-size:.78rem;color:var(--muted);line-height:1.5}
+.why b{color:var(--texto)}
+.bul{font-size:.72rem;color:var(--muted);padding-left:1rem}
+.rej{font-size:.7rem;color:var(--muted);border:1px solid rgba(255,61,61,.25);background:rgba(255,61,61,.06);padding:8px;border-radius:8px}
+.tags{display:flex;flex-wrap:wrap;gap:4px}
+.tag{font-size:.58rem;font-weight:700;padding:2px 6px;border:1px solid var(--borde);border-radius:5px;color:var(--muted)}
+.tag.ev{color:var(--verde);border-color:rgba(0,200,83,.4);background:var(--soft)}
+.share{width:100%;background:rgba(42,171,238,.12);border:1px solid rgba(42,171,238,.35);color:#7dd3fc;border-radius:8px;padding:.45rem;font-size:.72rem;font-weight:700;cursor:pointer}
+.empty{grid-column:1/-1;text-align:center;padding:2rem;color:var(--muted)}
+.disclaimer{margin-top:1.2rem;border:1px solid rgba(255,61,61,.25);background:rgba(255,61,61,.06);border-radius:12px;padding:.8rem;font-size:.72rem;color:var(--muted)}
+.fab{position:fixed;right:16px;bottom:16px;width:52px;height:52px;border-radius:50%;border:2px solid rgba(0,200,83,.5);background:var(--card);padding:0;overflow:hidden;cursor:pointer;z-index:40}
+.fab img{width:100%;height:100%;object-fit:cover}
+.as{position:fixed;right:16px;bottom:78px;width:min(360px,calc(100vw - 24px));max-height:70vh;display:none;flex-direction:column;background:#102418;border:1px solid var(--borde);border-radius:14px;z-index:40}
+.as.open{display:flex}
+.as-h{padding:.7rem 1rem;border-bottom:1px solid var(--borde);display:flex;justify-content:space-between;font-weight:800;font-size:.88rem}
+.as-b{padding:.7rem;overflow:auto;flex:1}
+.msg{font-size:.78rem;padding:.5rem .7rem;border-radius:10px;margin-bottom:.45rem;line-height:1.45}
+.bot{background:var(--card);border:1px solid var(--borde)}
+.user{background:var(--soft);margin-left:1.5rem}
+.as-f{display:flex;gap:.4rem;padding:.6rem;border-top:1px solid var(--borde)}
+.as-f input{flex:1;background:var(--card);border:1px solid var(--borde);border-radius:10px;padding:.5rem .7rem;color:var(--texto)}
+.as-f button{background:var(--verde);color:#04210f;border:none;border-radius:10px;padding:.5rem .75rem;font-weight:800;cursor:pointer}
+</style>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <div class="brand"><img src="logo-canal.jpeg" alt="" onerror="this.style.display='none'"/>Predicciones <b>Pro</b></div>
+  <a class="btn" href="https://t.me/" target="_blank" rel="noopener">Telegram</a>
+</div></header>
+<section class="wrap hero">
+  <div>
+    <h1>Picks cruzados con <span>Forebet, FootyStats y AdamChoi</span></h1>
+    <p>Sin Over 2.5 automatico ni favoritos a 1.10. Cuota minima 1.50. Sin montos a apostar.</p>
+    <div class="stats">
+      <div class="stat"><strong id="st-hoy">-</strong><small>PICKS HOY</small></div>
+      <div class="stat"><strong id="st-total">-</strong><small>TOTAL</small></div>
+      <div class="stat"><strong>1.50+</strong><small>CUOTA MIN.</small></div>
+    </div>
+  </div>
+  <div class="stage">
+    <img src="logo-canal.jpeg" alt="" onerror="this.style.display='none'"/>
+    <div class="stage-bar"><span>IA en vivo</span><span>Predicciones Pro</span></div>
+  </div>
+</section>
+<div class="wrap" id="picks">
+  <div class="filters" id="dayf">
+    <button class="fbtn active" data-k="hoy" type="button">Hoy</button>
+    <button class="fbtn" data-k="manana" type="button">Manana</button>
+    <button class="fbtn" data-k="all" type="button">Todos</button>
+  </div>
+  <div class="filters" id="lgf">
+    <button class="fbtn active" data-k="all" type="button">Todas</button>
+    <button class="fbtn" data-k="ucl" type="button">UCL</button>
+    <button class="fbtn" data-k="lib" type="button">Libertadores</button>
+    <button class="fbtn" data-k="bra" type="button">Brasil/Suda</button>
+    <button class="fbtn" data-k="por" type="button">Portugal</button>
+  </div>
+  <div class="grid" id="grid"></div>
+  <p class="disclaimer"><strong>Aviso:</strong> Educativo. Fuentes: Forebet, FootyStats, tendencias tipo AdamChoi. No es consejo financiero. +18.</p>
+</div>
+<button class="fab" id="fab" type="button"><img src="logo-canal.jpeg" alt="IA" onerror="this.style.display='none'"/></button>
+<div class="as" id="as">
+  <div class="as-h">Asistente <button type="button" id="asx" style="background:none;border:none;color:var(--muted);cursor:pointer">X</button></div>
+  <div class="as-b" id="asb"><div class="msg bot">Preguntame por un partido o por que no va un favorito corto. Cuota minima 1.50.</div></div>
+  <div class="as-f"><input id="asi" placeholder="Ej: por que Under en Napoli"/><button type="button" id="ass">Enviar</button></div>
+</div>
+<script>
+const PICKS = [{"id": "liv-atm", "league": "UCL", "leagueKey": "ucl", "kickoff": "2026-09-09T19:00:00.000Z", "home": "Liverpool", "away": "Atlético Madrid", "market": "Ambos marcan (BTTS Sí)", "odds": 1.58, "impliedPct": 63.3, "modelPct": 73, "evPct": 15.3, "conf": 78, "sources": ["Forebet", "FootyStats"], "bullets": ["Forebet: 73% BTTS / marcador 2-1 / media 2.83 goles", "H2H: 9 partidos, media 2.89 goles", "1X2: 1.70 / 4.10 / 4.60 — Liverpool no es value"], "analysis": "El error típico es ir al 1 de Liverpool @ 1.69. Forebet le da 36% al local. Donde hay precio es BTTS: Forebet 73% vs implícita 63% @ 1.58.", "rejected": "Se descarta Liverpool gana @ 1.69."}, {"id": "nap-ars", "league": "UCL", "leagueKey": "ucl", "kickoff": "2026-09-09T19:00:00.000Z", "home": "Napoli", "away": "Arsenal", "market": "Menos de 2.5 goles", "odds": 1.88, "impliedPct": 53.2, "modelPct": 68, "evPct": 27.8, "conf": 80, "sources": ["Forebet", "FootyStats", "AdamChoi"], "bullets": ["Forebet: 0-1, media 1.97, BTTS No 57%", "Arsenal Under 2.5 en 4 UCL de visitante", "H2H media 1.75, Arsenal ganó 3 de 4"], "analysis": "No es un Over. Forebet proyecta 0-1 (media 1.97). Under @ 1.88 implica 53% y el modelo ~68%. Arsenal @ 1.74 no es value (44% vs 57%).", "rejected": "Se descarta Arsenal gana @ 1.74."}, {"id": "spo-gal", "league": "UCL", "leagueKey": "ucl", "kickoff": "2026-09-09T19:00:00.000Z", "home": "Sporting CP", "away": "Galatasaray", "market": "BTTS No", "odds": 2.3, "impliedPct": 43.5, "modelPct": 57, "evPct": 31.1, "conf": 74, "sources": ["Forebet", "AdamChoi"], "bullets": ["Forebet: 3-0 Sporting, BTTS No 57%", "Galatasaray: 0 goles en 4 visitas UCL", "Sporting @ 1.83 casi en línea, sin edge"], "analysis": "Forebet ve 3-0. Gala no marcó en 4 UCL de visitante. BTTS No @ 2.30 paga modelo 57% vs implícita 43%.", "rejected": "Se descarta BTTS Sí @ 1.57 y Sporting @ 1.83."}, {"id": "stu-vik", "league": "UCL", "leagueKey": "ucl", "kickoff": "2026-09-09T16:45:00.000Z", "home": "Stuttgart", "away": "Viking", "market": "Ambos marcan (BTTS Sí)", "odds": 1.58, "impliedPct": 63.3, "modelPct": 74, "evPct": 16.9, "conf": 76, "sources": ["Forebet"], "bullets": ["Forebet: 3-3, media 3.07, BTTS 74%", "Stuttgart @ 1.24 queda fuera (mínimo 1.50)"], "analysis": "Stuttgart 1.24 no se publica. Forebet ve 3-3 y 74% BTTS. @ 1.58 el modelo está 11 puntos arriba de la implícita.", "rejected": "Se descarta Stuttgart @ 1.24 y Over 2.5 @ 1.26."}, {"id": "pal-ldu", "league": "Libertadores", "leagueKey": "lib", "kickoff": "2026-09-09T22:00:00.000Z", "home": "Palmeiras", "away": "LDU", "market": "Menos de 2.5 goles", "odds": 1.86, "impliedPct": 53.8, "modelPct": 58, "evPct": 7.9, "conf": 68, "sources": ["Forebet", "FootyStats"], "bullets": ["Forebet: 1-0, media 2.35", "Palmeiras @ 1.25 se descarta"], "analysis": "Palmeiras 1.25 no se toca. Forebet 1-0 y media 2.35: Under 2.5 @ 1.86. Confianza no máxima por H2H corto.", "rejected": "Se descarta Palmeiras @ 1.25."}, {"id": "san-cam", "league": "Sudamericana", "leagueKey": "bra", "kickoff": "2026-09-09T22:00:00.000Z", "home": "Santos", "away": "Atlético Mineiro", "market": "Más de 2.5 goles", "odds": 2.3, "impliedPct": 43.5, "modelPct": 58, "evPct": 33.4, "conf": 70, "sources": ["FootyStats"], "bullets": ["H2H 48 partidos, media 2.94", "1X2 abierto 2.27 / 3.12 / 3.17"], "analysis": "48 H2H con media 2.94. Over @ 2.30 (implícita 43%). El Under @ 1.60 choca con el historial.", "rejected": "Se descarta Under 2.5 @ 1.60."}, {"id": "mor-ben", "league": "Liga Portugal", "leagueKey": "por", "kickoff": "2026-09-09T19:45:00.000Z", "home": "Moreirense", "away": "Benfica", "market": "BTTS No", "odds": 1.61, "impliedPct": 62.1, "modelPct": 62, "evPct": -0.2, "conf": 72, "sources": ["Forebet", "AdamChoi"], "bullets": ["Benfica invicto 38 en Liga Portugal", "Benfica @ 1.16 se descarta"], "analysis": "No se publica Benfica @ 1.16. El mercado accesible es BTTS No @ 1.61.", "rejected": "Se descarta Benfica @ 1.16."}, {"id": "est-cor", "league": "Libertadores", "leagueKey": "lib", "kickoff": "2026-09-10T00:30:00.000Z", "home": "Estudiantes", "away": "Corinthians", "market": "Gana Estudiantes", "odds": 2.24, "impliedPct": 44.6, "modelPct": 48, "evPct": 7.5, "conf": 73, "sources": ["Forebet"], "bullets": ["Forebet pick del día Libertadores", "Estudiantes invicto 8 locales en copa"], "analysis": "Uno de los pocos 1X2 que pasa 1.50. Forebet lo marca como pick del día. Under 2.5 @ 1.39 queda afuera.", "rejected": "Se descarta Under 2.5 @ 1.39."}, {"id": "bay-bod", "league": "UCL", "leagueKey": "ucl", "kickoff": "2026-09-10T19:00:00.000Z", "home": "Bayern", "away": "Bodø/Glimt", "market": "Ambos marcan (BTTS Sí)", "odds": 1.65, "impliedPct": 60.6, "modelPct": 62, "evPct": 2.3, "conf": 71, "sources": ["Forebet", "AdamChoi"], "bullets": ["Bodø Over 2.5 en 12 UCL seguidos", "Bayern @ 1.10 y Over 2.5 @ 1.12 fuera"], "analysis": "Bayern y Over 2.5 no se publican por cuota. La vía 1.50+ es BTTS @ 1.65.", "rejected": "Se descarta Bayern @ 1.10."}, {"id": "psv-sha", "league": "UCL", "leagueKey": "ucl", "kickoff": "2026-09-10T16:45:00.000Z", "home": "PSV", "away": "Shakhtar", "market": "Más de 3.5 goles", "odds": 2.14, "impliedPct": 46.7, "modelPct": 57, "evPct": 22.0, "conf": 75, "sources": ["Forebet", "FootyStats"], "bullets": ["Forebet 3-1, media 3.98", "PSV @ 1.42 y Over 2.5 @ 1.43 fuera"], "analysis": "Media 3.98. Over 2.5 @ 1.43 no se publica. Over 3.5 @ 2.14 todavía paga.", "rejected": "Se descarta PSV @ 1.42."}, {"id": "mun-sab", "league": "UCL", "leagueKey": "ucl", "kickoff": "2026-09-10T19:00:00.000Z", "home": "Manchester United", "away": "Sabah", "market": "Más de 3.5 goles", "odds": 1.65, "impliedPct": 60.6, "modelPct": 58, "evPct": -4.3, "conf": 72, "sources": ["FootyStats"], "bullets": ["United @ 1.11 y Over 2.5 @ 1.24 se descartan"], "analysis": "United 1.11 no se toca. Over 3.5 @ 1.65 es el primer precio que cumple 1.50.", "rejected": "Se descarta United @ 1.11."}, {"id": "fen-rom", "league": "UCL", "leagueKey": "ucl", "kickoff": "2026-09-10T16:45:00.000Z", "home": "Fenerbahçe", "away": "Roma", "market": "Gana Roma", "odds": 2.15, "impliedPct": 46.5, "modelPct": 40, "evPct": -14.0, "conf": 66, "sources": ["Forebet", "FootyStats"], "bullets": ["Forebet 38-22-40, predice 1-2", "BTTS @ 1.60 sin value"], "analysis": "Partido parejo. Forebet se inclina a Roma. Edge chico: confianza Media-Alta.", "rejected": "Se descarta BTTS Sí @ 1.60."}];
+
+const TZ = "America/Argentina/Buenos_Aires";
+function ymd(iso){return new Date(iso).toLocaleDateString("en-CA",{timeZone:TZ});}
+function today(){return new Date().toLocaleDateString("en-CA",{timeZone:TZ});}
+function tomorrow(){
+  var p = today().split("-");
+  var dt = new Date(Number(p[0]), Number(p[1])-1, Number(p[2])+1);
+  var m = String(dt.getMonth()+1); if(m.length<2) m="0"+m;
+  var d = String(dt.getDate()); if(d.length<2) d="0"+d;
+  return dt.getFullYear()+"-"+m+"-"+d;
+}
+function clock(iso){return new Date(iso).toLocaleString("es-AR",{timeZone:TZ,weekday:"short",hour:"2-digit",minute:"2-digit"});}
+function bucket(iso){
+  var d = ymd(iso);
+  if(d===today()) return "hoy";
+  if(d===tomorrow()) return "manana";
+  return "prox";
+}
+function stars(c){
+  var n = c>=78?5:c>=72?4:3;
+  var s="";
+  for(var i=1;i<=5;i++) s += '<span class="'+(i<=n?"on":"")+'">*</span>';
+  return s;
+}
+function lvl(c){return c>=78?"Maxima":c>=72?"Alta":"Media-Alta";}
+function esc(t){return String(t);}
+
+var dayF="hoy", lgF="all";
+function list(){
+  return PICKS.filter(function(p){
+    var b=bucket(p.kickoff);
+    if(dayF!=="all" && b!==dayF) return false;
+    if(lgF!=="all" && p.leagueKey!==lgF) return false;
+    return true;
+  }).sort(function(a,b){return b.conf-a.conf;});
+}
+function card(p){
+  var when = bucket(p.kickoff)==="hoy"?"Hoy":(bucket(p.kickoff)==="manana"?"Man.":"Prox");
+  var bullets = p.bullets.map(function(b){return "<li>"+esc(b)+"</li>";}).join("");
+  var tags = p.sources.map(function(s){return '<span class="tag">'+esc(s)+"</span>";}).join("") + '<span class="tag ev">EV +'+p.evPct+"%</span>";
+  var share = "https://t.me/share/url?url="+encodeURIComponent(location.href)+"&text="+encodeURIComponent(p.home+" vs "+p.away+" | "+p.market+" @ "+p.odds);
+  return '<article class="card">'
+    +'<div class="row"><span class="chip">'+esc(p.league)+'</span><span class="time">'+when+" · "+clock(p.kickoff)+"</span></div>"
+    +'<div class="conf"><span class="cl">Confianza</span><div class="stars">'+stars(p.conf)+'</div><span class="lvl">'+lvl(p.conf)+"</span></div>"
+    +'<div class="teams"><div class="team">'+esc(p.home)+'</div><div class="vs">VS</div><div class="team">'+esc(p.away)+"</div></div>"
+    +'<div class="rec"><div><small>Pick 1.50+</small><div class="pick">'+esc(p.market)+'</div></div><div class="odds">'+p.odds.toFixed(2)+"</div></div>"
+    +'<div class="nums"><div>Modelo<b>'+p.modelPct+'%</b></div><div>Implicita<b>'+p.impliedPct+'%</b></div><div>EV<b>+'+p.evPct+"%</b></div></div>"
+    +'<ul class="bul">'+bullets+"</ul>"
+    +'<p class="why"><b>Por que este pick:</b> '+esc(p.analysis)+"</p>"
+    +'<p class="rej">'+esc(p.rejected)+"</p>"
+    +'<div class="tags">'+tags+"</div>"
+    +'<button class="share" type="button" data-share="'+share+'">Compartir en Telegram</button>'
+    +"</article>";
+}
+function render(){
+  var L=list();
+  document.getElementById("st-hoy").textContent = PICKS.filter(function(p){return bucket(p.kickoff)==="hoy";}).length;
+  document.getElementById("st-total").textContent = PICKS.length;
+  document.getElementById("grid").innerHTML = L.length ? L.map(card).join("") : '<div class="empty">No hay picks para este filtro.</div>';
+  var btns = document.querySelectorAll(".share");
+  for(var i=0;i<btns.length;i++){
+    btns[i].onclick = function(){ location.href = this.getAttribute("data-share"); };
+  }
+}
+function bind(sel, key, store){
+  var nodes = document.querySelectorAll(sel+" .fbtn");
+  for(var i=0;i<nodes.length;i++){
+    nodes[i].onclick = function(){
+      var all = this.parentNode.querySelectorAll(".fbtn");
+      for(var j=0;j<all.length;j++) all[j].className="fbtn";
+      this.className="fbtn active";
+      if(store==="day") dayF=this.getAttribute("data-k");
+      else lgF=this.getAttribute("data-k");
+      render();
+    };
+  }
+}
+bind("#dayf","day","day");
+bind("#lgf","lg","lg");
+render();
+
+var asEl=document.getElementById("as"), asb=document.getElementById("asb");
+document.getElementById("fab").onclick=function(){ asEl.classList.toggle("open"); };
+document.getElementById("asx").onclick=function(){ asEl.classList.remove("open"); };
+function add(t,w){ var d=document.createElement("div"); d.className="msg "+w; d.textContent=t; asb.appendChild(d); asb.scrollTop=asb.scrollHeight; }
+function answer(q){
+  var t=q.toLowerCase();
+  var top=PICKS.slice().sort(function(a,b){return b.conf-a.conf;}).slice(0,4);
+  if(/hoy|mejor|top|pick/.test(t)){
+    var s="Picks con mas confianza:\n";
+    for(var i=0;i<top.length;i++) s+="• "+top[i].home+" vs "+top[i].away+": "+top[i].market+" @ "+top[i].odds+"\n";
+    return s;
+  }
+  for(var i=0;i<PICKS.length;i++){
+    var p=PICKS[i];
+    if(t.indexOf(p.home.toLowerCase())>=0 || t.indexOf(p.away.toLowerCase().split(" ")[0].toLowerCase())>=0){
+      return p.home+" vs "+p.away+": "+p.market+" @ "+p.odds+". "+p.analysis;
+    }
+  }
+  if(/1.50|cuota/.test(t)) return "Solo se publican mercados desde 1.50. Favoritos a 1.10 no entran.";
+  return "Preguntame por un partido (Liverpool, Napoli, Sporting) o por la regla de cuota 1.50.";
+}
+function send(){
+  var inp=document.getElementById("asi");
+  var q=inp.value.trim();
+  if(!q) return;
+  inp.value="";
+  add(q,"user");
+  add(answer(q),"bot");
+}
+document.getElementById("ass").onclick=send;
+document.getElementById("asi").addEventListener("keydown", function(e){ if(e.key==="Enter") send(); });
+
+</script>
+</body>
+</html>

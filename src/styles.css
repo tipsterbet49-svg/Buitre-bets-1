@@ -1,19 +1,27 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg: #07140c;
-  --color-surface: #102418;
-  --color-card: #1a2e20;
-  --color-fg: #e8f5e9;
-  --color-muted: #8fb99a;
+  --color-bg: #0f0f0f;
+  --color-nav: #060d06;
+  --color-surface: #141414;
+  --color-card: #161616;
+  --color-fg: #e8e8e8;
+  --color-muted: #9e9e9e;
   --color-primary: #00c853;
-  --color-primary-fg: #04210f;
+  --color-primary-fg: #04140a;
   --color-accent: #ffd600;
-  --color-border: #2e4a2e;
-  --color-danger: #ff3d3d;
+  --color-border: #2a2a2a;
+  --color-danger: #ef5350;
   --color-tg: #2aabee;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --radius-lg: 1rem;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --radius-lg: 0.875rem;
+  --shadow-border: 0 0 0 1px rgba(255, 255, 255, 0.08);
+  --shadow-border-hover: 0 0 0 1px rgba(0, 200, 83, 0.45);
+  --shadow-max: 0 0 0 1px rgba(255, 214, 0, 0.42);
+  --shadow-rec: 0 0 0 1px rgba(255, 214, 0, 0.28);
+  --shadow-nav: 0 8px 32px rgba(0, 0, 0, 0.6);
+  --shadow-mascot: 0 8px 40px rgba(0, 200, 83, 0.28), 0 0 0 2px rgba(0, 200, 83, 0.2);
 }
 
 @layer base {
@@ -22,10 +30,90 @@
     cursor: pointer;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   html,
   body {
     background: var(--color-bg);
     color: var(--color-fg);
     font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  select {
+    color: inherit;
+  }
+
+  select option {
+    background: #181818;
+    color: #e0e0e0;
+  }
+}
+
+@layer components {
+  .nav-glow {
+    position: relative;
+  }
+
+  .nav-glow::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--color-primary) 40%, var(--color-primary) 60%, transparent);
+    opacity: 0.65;
+  }
+
+  .live-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--color-primary);
+    box-shadow: 0 0 0 0 rgba(0, 200, 83, 0.55);
+    animation: live-pulse 1.6s ease-out infinite;
+  }
+
+  @keyframes live-pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(0, 200, 83, 0.55);
+    }
+    70% {
+      box-shadow: 0 0 0 7px rgba(0, 200, 83, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(0, 200, 83, 0);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .live-dot {
+    animation: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
   }
 }

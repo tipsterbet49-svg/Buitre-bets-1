@@ -1,16 +1,19 @@
 import { createServerFn } from "@tanstack/react-start";
-import { PICKS } from "@/data/picks";
-
-const CONTEXT = PICKS.map(
-  (p) =>
-    `${p.home} vs ${p.away} (${p.league}) | pick: ${p.market} @ ${p.odds} | conf ${p.conf}% | EV ${p.evPct}% | ${p.analysis}`,
-).join("\n");
 
 export const askGrok = createServerFn({ method: "POST" })
   .validator((input: { question: string }) => input)
   .handler(async ({ data }) => {
     const q = data.question.trim().slice(0, 400);
     if (!q) return { ok: false as const, error: "Pregunta vacía" };
+
+    const { loadPicksFromBsd } = await import("@/lib/bsd/client.server");
+    const { picks } = await loadPicksFromBsd();
+    const context = picks
+      .map(
+        (p) =>
+          `${p.home} vs ${p.away} (${p.league}) | pick: ${p.market} @ ${p.odds} | conf ${p.conf}% | EV ${p.evPct}% | ${p.analysis}`,
+      )
+      .join("\n");
 
     const apiKey = process.env.XAI_API_KEY;
     if (!apiKey) {
@@ -32,10 +35,10 @@ export const askGrok = createServerFn({ method: "POST" })
             role: "system",
             content:
               "Sos el asistente de Predicciones Pro. Hablá en español rioplatense, claro y directo. " +
-              "Solo usá estos picks (cuota mínima 1.50). No indiques montos a apostar. " +
+              "Solo usá estos picks (cuota mínima 1.50, modelo BSD). No indiques montos a apostar. " +
               "Si te piden un favorito a cuota < 1.50, explicá por qué no se publica. " +
-              "Fuentes: Forebet (probs/media/CS), FootyStats (cuotas/H2H), tendencias tipo AdamChoi.\n\n" +
-              CONTEXT,
+              "No promociones Over 2.5 por default.\n\n" +
+              context,
           },
           { role: "user", content: q },
         ],
