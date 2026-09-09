@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Predicciones Pro</title>
+<meta name="theme-color" content="#07140c"/>
+<link rel="icon" href="logo-canal.jpeg"/>
+<style>
+:root{--verde:#00c853;--negro:#07140c;--card:#1a2e20;--borde:#2e4a2e;--texto:#e8f5e9;--muted:#8fb99a;--tg:#2AABEE;--soft:rgba(0,200,83,.14)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,Segoe UI,Roboto,sans-serif;background:var(--negro);color:var(--texto);line-height:1.45}
+a{color:inherit;text-decoration:none}button,input{font-family:inherit}
+.wrap{max-width:1100px;margin:0 auto;padding:0 1rem 2rem}
+.top{position:sticky;top:0;z-index:20;background:rgba(7,20,12,.95);border-bottom:1px solid var(--borde)}
+.top-in{max-width:1100px;margin:0 auto;padding:.7rem 1rem;display:flex;justify-content:space-between;align-items:center}
+.brand{font-weight:900;display:flex;align-items:center;gap:.5rem}.brand b{color:var(--verde)}
+.brand img{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid rgba(0,200,83,.4)}
+.btn{border:none;border-radius:10px;padding:.5rem .9rem;font-weight:800;font-size:.8rem;cursor:pointer;background:var(--tg);color:#fff}
+.hero{display:grid;grid-template-columns:1.2fr .8fr;gap:1.2rem;align-items:center;padding-top:1.4rem}
+@media(max-width:800px){.hero{grid-template-columns:1fr}}
+.hero h1{font-size:clamp(1.4rem,4vw,2rem);font-weight:900;margin:.5rem 0}
+.hero h1 span{color:var(--verde)}
+.hero p{color:var(--muted);max-width:560px}
+.stats{display:flex;gap:.5rem;flex-wrap:wrap;margin:1rem 0}
+.stat{background:var(--card);border:1px solid var(--borde);border-radius:12px;padding:.6rem .9rem}
+.stat strong{display:block;color:var(--verde);font-size:1.2rem}
+.stat small{font-size:.65rem;color:var(--muted);font-weight:700}
+.stage{position:relative;border-radius:18px;overflow:hidden;border:2px solid rgba(0,200,83,.4);background:#061008;aspect-ratio:1;max-width:280px;margin:0 auto}
+.stage img{width:78%;height:78%;object-fit:contain;display:block;margin:11% auto}
+.stage-bar{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.72);padding:8px 12px;display:flex;justify-content:space-between;font-size:.68rem;font-weight:700;color:var(--muted)}
+.filters{display:flex;flex-wrap:wrap;gap:.35rem;margin:.6rem 0}
+.fbtn{background:var(--card);border:1px solid var(--borde);color:var(--muted);padding:.4rem .8rem;border-radius:999px;font-size:.75rem;font-weight:700;cursor:pointer}
+.fbtn.active{background:var(--verde);border-color:var(--verde);color:#04210f}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:.85rem}
+.card{background:var(--card);border:1px solid var(--borde);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:9px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:.5rem}
+.chip{font-size:.62rem;font-weight:800;color:#f6cf6b;background:rgba(255,214,0,.1);border:1px solid rgba(255,214,0,.3);border-radius:999px;padding:3px 8px}
+.time{font-size:.66rem;color:var(--muted);font-weight:600}
+.conf{display:flex;align-items:center;gap:8px;padding:6px 10px;background:rgba(0,0,0,.28);border-radius:10px}
+.cl{font-size:.58rem;font-weight:700;color:rgba(255,255,255,.55);text-transform:uppercase}
+.stars{flex:1;text-align:center;color:rgba(255,255,255,.16);letter-spacing:2px}.stars .on{color:var(--verde)}
+.lvl{font-size:.65rem;font-weight:800;padding:2px 7px;border-radius:6px;background:var(--soft);color:var(--verde)}
+.teams{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.team{flex:1;text-align:center;font-weight:800;font-size:.9rem}
+.vs{width:30px;height:30px;border-radius:50%;background:#07140c;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:900;color:var(--muted)}
+.nums{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;text-align:center;font-size:.75rem}
+.nums div{background:rgba(0,0,0,.25);border-radius:8px;padding:6px}
+.nums b{display:block;color:var(--verde)}
+.rec{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--borde);padding-top:10px}
+.rec small{font-size:.58rem;font-weight:700;color:var(--muted);text-transform:uppercase}
+.pick{font-size:.92rem;font-weight:800}
+.odds{font-size:1.2rem;font-weight:900;color:var(--verde);background:var(--soft);border:1px solid rgba(0,200,83,.4);padding:6px 11px;border-radius:10px}
+.why{font-size:.78rem;color:var(--muted);line-height:1.5}
+.why b{color:var(--texto)}
+.bul{font-size:.72rem;color:var(--muted);padding-left:1rem}
+.rej{font-size:.7rem;color:var(--muted);border:1px solid rgba(255,61,61,.25);background:rgba(255,61,61,.06);padding:8px;border-radius:8px}
+.tags{display:flex;flex-wrap:wrap;gap:4px}
+.tag{font-size:.58rem;font-weight:700;padding:2px 6px;border:1px solid var(--borde);border-radius:5px;color:var(--muted)}
+.tag.ev{color:var(--verde);border-color:rgba(0,200,83,.4);background:var(--soft)}
+.share{width:100%;background:rgba(42,171,238,.12);border:1px solid rgba(42,171,238,.35);color:#7dd3fc;border-radius:8px;padding:.45rem;font-size:.72rem;font-weight:700;cursor:pointer}
+.empty{grid-column:1/-1;text-align:center;padding:2rem;color:var(--muted)}
+.disclaimer{margin-top:1.2rem;border:1px solid rgba(255,61,61,.25);background:rgba(255,61,61,.06);border-radius:12px;padding:.8rem;font-size:.72rem;color:var(--muted)}
+.fab{position:fixed;right:16px;bottom:16px;width:52px;height:52px;border-radius:50%;border:2px solid rgba(0,200,83,.5);background:var(--card);padding:0;overflow:hidden;cursor:pointer;z-index:40}
+.fab img{width:100%;height:100%;object-fit:cover}
+.as{position:fixed;right:16px;bottom:78px;width:min(360px,calc(100vw - 24px));max-height:70vh;display:none;flex-direction:column;background:#102418;border:1px solid var(--borde);border-radius:14px;z-index:40}
+.as.open{display:flex}
+.as-h{padding:.7rem 1rem;border-bottom:1px solid var(--borde);display:flex;justify-content:space-between;font-weight:800;font-size:.88rem}
+.as-b{padding:.7rem;overflow:auto;flex:1}
+.msg{font-size:.78rem;padding:.5rem .7rem;border-radius:10px;margin-bottom:.45rem;line-height:1.45}
+.bot{background:var(--card);border:1px solid var(--borde)}
+.user{background:var(--soft);margin-left:1.5rem}
+.as-f{display:flex;gap:.4rem;padding:.6rem;border-top:1px solid var(--borde)}
+.as-f input{flex:1;background:var(--card);border:1px solid var(--borde);border-radius:10px;padding:.5rem .7rem;color:var(--texto)}
+.as-f button{background:var(--verde);color:#04210f;border:none;border-radius:10px;padding:.5rem .75rem;font-weight:800;cursor:pointer}
+</style>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <div class="brand"><img src="logo-canal.jpeg" alt="" onerror="this.style.display='none'"/>Predicciones <b>Pro</b></div>
+  <a class="btn" href="https://t.me/" target="_blank" rel="noopener">Telegram</a>
+</div></header>
+<section class="wrap hero">
+  <div>
+    <h1>Picks cruzados con <span>Forebet, FootyStats y AdamChoi</span></h1>
+    <p>Sin Over 2.5 automatico ni favoritos a 1.10. Cuota minima 1.50. Sin montos a apostar.</p>
+    <div class="stats">
+      <div class="stat"><strong id="st-hoy">-</strong><small>PICKS HOY</small></div>
+      <div class="stat"><strong id="st-total">-</strong><small>TOTAL</small></div>
+      <div class="stat"><strong>1.50+</strong><small>CUOTA MIN.</small></div>
+    </div>
+  </div>
+  <div class="stage">
+    <img src="logo-canal.jpeg" alt="" onerror="this.style.display='none'"/>
+    <div class="stage-bar"><span>IA en vivo</span><span>Predicciones Pro</span></div>
+  </div>
+</section>
+<div class="wrap" id="picks">
+  <div class="filters" id="dayf">
+    <button class="fbtn active" data-k="hoy" type="button">Hoy</button>
+    <button class="fbtn" data-k="manana" type="button">Manana</button>
+    <button class="fbtn" data-k="all" type="button">Todos</button>
+  </div>
+  <div class="filters" id="lgf">
+    <button class="fbtn active" data-k="all" type="button">Todas</button>
+    <button class="fbtn" data-k="ucl" type="button">UCL</button>
+    <button class="fbtn" data-k="lib" type="button">Libertadores</button>
+    <button class="fbtn" data-k="bra" type="button">Brasil/Suda</button>
+    <button class="fbtn" data-k="por" type="button">Portugal</button>
+  </div>
+  <div class="grid" id="grid"></div>
+  <p class="disclaimer"><strong>Aviso:</strong> Educativo. Fuentes: Forebet, FootyStats, tendencias tipo AdamChoi. No es consejo financiero. +18.</p>
+</div>
+<button class="fab" id="fab" type="button"><img src="logo-canal.jpeg" alt="IA" onerror="this.style.display='none'"/></button>
+<div class="as" id="as">
+  <div class="as-h">Asistente <button type="button" id="asx" style="background:none;border:none;color:var(--muted);cursor:pointer">X</button></div>
+  <div class="as-b" id="asb"><div class="msg bot">Preguntame por un partido o por que no va un favorito corto. Cuota minima 1.50.</div></div>
+  <div class="as-f"><input id="asi" placeholder="Ej: por que Under en Napoli"/><button type="button" id="ass">Enviar</button></div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
