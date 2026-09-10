@@ -8,73 +8,101 @@
 <link rel="icon" href="logo-canal.jpeg"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://media.api-sports.io"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 <style>
-:root{--bg:#0f0f0f;--nav:#060d06;--card:#161616;--fg:#e8e8e8;--muted:#9e9e9e;--primary:#00c853;--primary-fg:#04140a;--accent:#ffd600;--border:#2a2a2a;--danger:#ef5350;--tg:#2aabee}
+:root{--bg:#0f0f0f;--nav:#060d06;--surface:#141414;--card:#161616;--fg:#e8e8e8;--muted:#9e9e9e;--primary:#00c853;--primary-fg:#04140a;--accent:#ffd600;--border:#2a2a2a;--danger:#ef5350;--tg:#2aabee}
 *{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
 html,body{background:var(--bg);color:var(--fg);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
-button{font-family:inherit;cursor:pointer;color:inherit}
+button,select{font-family:inherit;color:inherit;cursor:pointer}
 a{color:inherit;text-decoration:none}
+select option{background:#181818;color:#e0e0e0}
 .wrap{max-width:72rem;margin:0 auto;padding:0 1rem}
-.nav{position:sticky;top:0;z-index:20;background:var(--nav);box-shadow:0 8px 32px rgba(0,0,0,.6)}
+.nav{position:sticky;top:0;z-index:40;background:var(--nav);box-shadow:0 8px 32px rgba(0,0,0,.6)}
 .nav::after{content:"";display:block;height:2px;background:linear-gradient(90deg,transparent,var(--primary) 40%,var(--primary) 60%,transparent);opacity:.65}
 .nav-in{max-width:72rem;margin:0 auto;height:64px;padding:0 1rem;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.brand{display:flex;align-items:center;gap:10px;font-weight:900}
-.brand img{width:40px;height:40px;border-radius:12px;object-fit:cover;border:1px solid rgba(0,200,83,.35)}
-.brand b{color:var(--primary)}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.brand-mark{width:40px;height:40px;border-radius:12px;overflow:hidden;border:1px solid rgba(0,200,83,.35);background:var(--surface);flex-shrink:0}
+.brand-mark img{width:100%;height:100%;object-fit:cover}
+.brand-t{font-weight:900;font-size:16px;letter-spacing:-.02em}
+.brand-t b{color:var(--primary)}
+.brand-s{display:none;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(0,200,83,.6)}
+@media(min-width:640px){.brand-s{display:block}}
+.links{display:none;flex:1;justify-content:center;gap:4px}
+@media(min-width:1024px){.links{display:flex}}
+.links a{padding:8px 12px;border-radius:8px;font-size:14px;font-weight:500;color:var(--muted)}
+.links a:hover{background:rgba(0,200,83,.1);color:var(--fg)}
 .tg{background:var(--primary);color:var(--primary-fg);border:0;border-radius:999px;padding:8px 16px;font-size:12px;font-weight:800}
-.hero{display:flex;flex-direction:column;align-items:center;gap:2rem;padding:2rem 0 1.5rem}
-@media(min-width:768px){.hero{flex-direction:row;justify-content:space-between}}
-.live{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:12px}
+.ham{width:44px;height:44px;border:0;border-radius:12px;background:transparent;color:var(--fg);font-size:22px;display:flex;align-items:center;justify-content:center}
+@media(min-width:1024px){.ham{display:none}}
+.drawer{display:none;border-top:1px solid var(--border);background:var(--nav);padding:8px 16px 16px}
+.drawer.on{display:block}
+.drawer a{display:flex;min-height:44px;align-items:center;font-size:14px;font-weight:500}
+.hero{display:flex;flex-direction:column;align-items:center;gap:2rem;padding:2rem 1rem}
+@media(min-width:768px){.hero{flex-direction:row;justify-content:space-between;max-width:72rem;margin:0 auto}}
+.hero-copy{order:2;width:100%;min-width:0;flex:1}
+@media(min-width:768px){.hero-copy{order:1}}
+.live{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:.04em;color:var(--muted);margin-bottom:12px}
 .dot{width:8px;height:8px;border-radius:99px;background:var(--primary);box-shadow:0 0 0 0 rgba(0,200,83,.55);animation:pulse 1.6s ease-out infinite}
-@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(0,200,83,.55)}70%{box-shadow:0 0 0 7px transparent}}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(0,200,83,.55)}70%{box-shadow:0 0 0 7px transparent}100%{box-shadow:0 0 0 0 transparent}}
 h1{font-size:clamp(2rem,5vw,3rem);font-weight:900;letter-spacing:-.03em}
+h1 span{color:var(--primary)}
 .sub{margin-top:8px;color:var(--muted);font-weight:500}
 .stats{margin-top:1.5rem;max-width:28rem;display:flex;overflow:hidden;border-radius:12px;background:var(--card);box-shadow:0 0 0 1px rgba(255,255,255,.08)}
-.stat{flex:1;text-align:center;padding:14px 8px;border-right:1px solid var(--border)}
+.stat{flex:1;text-align:center;padding:16px 8px;border-right:1px solid var(--border)}
 .stat:last-child{border-right:0}
-.stat strong{display:block;font-size:1.25rem;font-weight:800}
-.stat small{display:block;margin-top:4px;font-size:11px;color:var(--muted)}
+.stat strong{display:block;font-size:1.25rem;font-weight:800;font-variant-numeric:tabular-nums}
+.stat small{display:block;margin-top:4px;font-size:11px;color:var(--muted);font-weight:500}
 .cta{display:inline-flex;margin-top:1.5rem;min-height:44px;align-items:center;background:var(--primary);color:var(--primary-fg);border-radius:999px;padding:0 20px;font-size:14px;font-weight:800}
-.mascot{width:208px;height:208px;border-radius:24px;overflow:hidden;box-shadow:0 8px 40px rgba(0,200,83,.28),0 0 0 2px rgba(0,200,83,.2);flex-shrink:0}
-@media(min-width:768px){.mascot{width:240px;height:240px;order:2}.hero-copy{order:1;flex:1}}
+.mascot{order:1;width:208px;height:208px;border-radius:24px;overflow:hidden;flex-shrink:0;box-shadow:0 8px 40px rgba(0,200,83,.28),0 0 0 2px rgba(0,200,83,.2)}
+@media(min-width:768px){.mascot{order:2;width:240px;height:240px}}
 .mascot img{width:100%;height:100%;object-fit:cover;object-position:top}
-.sec{padding:0 0 2.5rem}
-.sec h2{font-size:1.5rem;font-weight:700}
+.page{max-width:72rem;margin:0 auto;padding:0 1rem 5rem;display:flex;flex-direction:column;gap:2.5rem}
+.sec h2{font-size:1.5rem;font-weight:600;letter-spacing:-.02em}
 .hint{margin-top:4px;font-size:14px;color:var(--muted)}
 .filters{display:flex;flex-wrap:wrap;gap:8px;margin-top:1.2rem}
 .chip{min-height:44px;border:0;border-radius:999px;padding:0 16px;font-size:14px;font-weight:700;color:var(--muted);background:transparent;box-shadow:0 0 0 1px rgba(255,255,255,.08)}
-.chip.on{background:var(--primary);color:var(--primary-fg);box-shadow:none}
+.chip.on{background:var(--primary);color:var(--primary-fg);box-shadow:none;font-weight:800}
+.sel{display:flex;min-height:44px;align-items:center;gap:8px;border-radius:999px;border:1px solid rgba(0,200,83,.35);background:var(--surface);padding:0 12px}
+.sel span{font-size:12px;font-weight:600;color:var(--muted)}
+.sel select{min-height:44px;background:transparent;border:0;outline:0;font-size:14px;font-weight:800}
 .grid{margin-top:1.5rem;display:grid;gap:16px}
 @media(min-width:768px){.grid{grid-template-columns:1fr 1fr}}
-@media(min-width:1200px){.grid{grid-template-columns:1fr 1fr 1fr}}
-.card{background:var(--card);border-radius:12px;padding:16px;box-shadow:0 0 0 1px rgba(255,255,255,.08);text-align:left;width:100%}
+@media(min-width:1280px){.grid{grid-template-columns:1fr 1fr 1fr}}
+.card{background:var(--card);border-radius:12px;padding:16px;box-shadow:0 0 0 1px rgba(255,255,255,.08);width:100%;transition:box-shadow .15s,transform .15s}
 .card.max{box-shadow:0 0 0 1px rgba(255,214,0,.4)}
-.card:hover{box-shadow:0 0 0 1px rgba(0,200,83,.45)}
+.card:hover{transform:translateY(-2px);box-shadow:0 0 0 1px rgba(0,200,83,.45)}
+.tog{all:unset;display:block;width:100%;cursor:pointer}
 .meta{display:flex;justify-content:space-between;gap:8px;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
 .live-tag{color:var(--danger);flex-shrink:0}
+.maxb{display:inline-block;background:var(--accent);color:var(--primary-fg);font-size:11px;font-weight:900;padding:2px 6px;border-radius:6px;letter-spacing:.04em}
 .match{margin-top:12px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}
 .team{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0}
 .esc{width:48px;height:48px;object-fit:contain;filter:drop-shadow(0 2px 4px rgba(0,0,0,.45))}
-.esc-fb{width:48px;height:48px;border-radius:999px;background:#141414;display:flex;align-items:center;justify-content:center;font-weight:900;color:var(--muted);font-size:12px;box-shadow:0 0 0 1px rgba(255,255,255,.08)}
-.tname{max-width:100%;font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.vs{font-size:11px;font-weight:800;letter-spacing:.08em;color:var(--muted);padding:4px 8px;border-radius:6px;background:var(--bg)}
-.score{font-size:20px;font-weight:900;letter-spacing:.04em}
+.esc.lg{width:64px;height:64px}
+.esc.sm{width:32px;height:32px}
+.esc-fb{width:48px;height:48px;border-radius:999px;background:var(--surface);display:flex;align-items:center;justify-content:center;font-weight:900;color:var(--muted);font-size:12px;box-shadow:0 0 0 1px rgba(255,255,255,.08)}
+.esc-fb.lg{width:64px;height:64px;font-size:18px}
+.esc-fb.sm{width:32px;height:32px;font-size:10px}
+.tname{max-width:100%;font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center}
+.vs{font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--muted);padding:4px 8px;border-radius:6px;background:var(--bg)}
+.score{font-size:20px;font-weight:900;font-variant-numeric:tabular-nums}
+.score.live{color:var(--danger)}
 .rec{margin-top:12px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-radius:12px;padding:10px 12px;background:rgba(255,214,0,.1);box-shadow:0 0 0 1px rgba(255,214,0,.35)}
-.rec .mkt{font-weight:800;color:var(--accent);text-align:left}
-.cuota{text-align:right}
-.cuota small{display:block;font-size:11px;color:var(--muted)}
-.cuota b{font-size:20px;font-variant-numeric:tabular-nums}
-.foot{margin-top:10px;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;color:var(--muted)}
-.ev{font-weight:700}
-.ev.pos{color:var(--primary)}
-.maxb{display:inline-block;margin-right:6px;background:var(--accent);color:#04140a;font-size:11px;font-weight:800;padding:2px 6px;border-radius:4px}
+.mkt{font-weight:800;color:var(--accent);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cuota{text-align:right;flex-shrink:0}
+.cuota small{display:block;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.cuota b{display:block;font-size:18px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums}
+.foot{margin-top:8px;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;color:var(--muted)}
+.ev{margin-left:8px}
+.ev.pos{color:var(--primary);font-weight:600}
+.more-lab{display:inline-flex;align-items:center;gap:4px;font-weight:600;color:var(--primary)}
 .more{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
 .card.open .more{display:block}
 .nums{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;font-size:12px}
 .nums div{background:var(--bg);border-radius:8px;padding:8px}
 .nums span{display:block;color:var(--muted)}
-.nums b{color:var(--primary)}
+.nums b{font-variant-numeric:tabular-nums}
 .bar{margin-top:10px}
 .bar-l{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:4px}
 .bar-g{display:flex;height:6px;overflow:hidden;border-radius:99px;background:var(--bg)}
@@ -82,30 +110,83 @@ h1{font-size:clamp(2rem,5vw,3rem);font-weight:900;letter-spacing:-.03em}
 .bar-g i:nth-child(2){background:var(--muted)}
 .bar-g i:last-child{background:rgba(232,232,232,.4)}
 .why{margin-top:10px;font-size:14px;line-height:1.55;color:var(--muted)}
-.why b{color:var(--fg)}
-.bul{margin-top:8px;font-size:12px;color:var(--muted)}
-.bul li{margin:4px 0 0 1rem}
-.rej{margin-top:10px;padding:10px;border-radius:12px;background:rgba(239,83,80,.08);font-size:12px;color:var(--muted)}
-.share{display:block;margin-top:10px;text-align:center;border-radius:12px;padding:10px;background:rgba(42,171,238,.1);color:var(--tg);font-size:12px;font-weight:700}
+.bul{margin-top:8px;font-size:12px;color:var(--muted);list-style:none}
+.bul li{margin-top:4px;padding-left:0}
+.rej{margin-top:10px;padding:12px;border-radius:12px;background:rgba(239,83,80,.06);font-size:12px;color:var(--muted)}
+.share{display:block;margin-top:10px;text-align:center;border-radius:12px;padding:10px;background:rgba(42,171,238,.1);color:var(--tg);font-size:12px;font-weight:600}
 .empty{padding:4rem 0;text-align:center;color:var(--muted)}
-.foot-site{margin-top:3rem;border-top:1px solid var(--border);background:var(--nav);padding:2.5rem 1rem;font-size:14px;color:var(--muted)}
-.foot-grid{max-width:72rem;margin:0 auto;display:grid;gap:1.5rem}
-@media(min-width:640px){.foot-grid{grid-template-columns:1fr 1fr 1fr}}
-.feat{max-width:32rem;margin-bottom:2.5rem}
-.feat .card{width:100%}
+.feat{max-width:32rem}
+.board{overflow:hidden;border-radius:12px;background:var(--card);box-shadow:0 0 0 1px rgba(255,255,255,.08);margin-top:1.2rem}
+.board li{display:flex;align-items:center;gap:12px;padding:10px 12px;border-top:1px solid var(--border)}
+.board li:first-child{border-top:0}
+.board .pair{display:flex;gap:4px;flex-shrink:0}
+.board .info{min-width:0;flex:1}
+.board .info p{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:14px;font-weight:600}
+.board .info small{display:block;font-size:12px;color:var(--accent);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.steps{margin-top:1.2rem;display:grid;gap:12px}
+@media(min-width:640px){.steps{grid-template-columns:1fr 1fr 1fr}}
+.step{border-radius:12px;background:var(--card);padding:16px;box-shadow:0 0 0 1px rgba(255,255,255,.08)}
+.step .n{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;color:var(--primary)}
+.step h3{margin-top:8px;font-size:16px}
+.step p{margin-top:4px;font-size:14px;line-height:1.5;color:var(--muted)}
+.site-foot{margin-top:4rem;border-top:1px solid var(--border);background:var(--nav);padding:2.5rem 1rem}
+.fg{max-width:72rem;margin:0 auto;display:grid;gap:2rem}
+@media(min-width:640px){.fg{grid-template-columns:1fr 1fr 1fr}}
+.fg p,.fg a{font-size:14px;color:var(--muted);line-height:1.6}
+.fg .t{color:var(--fg);font-weight:900}
+.fg h4{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.fg ul{list-style:none}
+.fg li{margin:6px 0}
+.fab{position:fixed;right:16px;bottom:80px;z-index:50;width:56px;height:56px;border-radius:999px;border:2px solid rgba(0,200,83,.5);background:var(--card);color:var(--primary);font-size:22px}
+@media(min-width:768px){.fab{bottom:24px}}
+.chat{display:none;position:fixed;right:16px;bottom:148px;z-index:50;width:min(360px,calc(100vw - 24px));max-height:70vh;flex-direction:column;overflow:hidden;border-radius:16px;border:1px solid var(--border);background:var(--surface)}
+@media(min-width:768px){.chat{bottom:96px}}
+.chat.on{display:flex}
+.chat-h{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid var(--border);font-size:14px;font-weight:800}
+.chat-b{padding:10px;overflow:auto;flex:1}
+.msg{font-size:13px;padding:8px 10px;border-radius:10px;margin-bottom:8px;line-height:1.45;white-space:pre-wrap}
+.msg.bot{background:var(--card);border:1px solid var(--border)}
+.msg.user{background:rgba(0,200,83,.12);margin-left:24px}
+.chat-f{display:flex;gap:6px;padding:10px;border-top:1px solid var(--border)}
+.chat-f input{flex:1;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:8px 10px;color:var(--fg)}
+.chat-f button{background:var(--primary);color:var(--primary-fg);border:0;border-radius:10px;padding:8px 12px;font-weight:800}
 .stamp{margin-top:1.5rem;font-size:12px;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){.dot{animation:none}*{transition:none!important}}
 </style>
 </head>
 <body>
-<header class="nav"><div class="nav-in">
-  <a class="brand" href="./"><img src="logo-canal.jpeg" alt=""/><span>Predicciones<b> Pro</b></span></a>
-  <a class="tg" href="https://t.me/" target="_blank" rel="noopener">Telegram</a>
-</div></header>
+<header class="nav">
+  <div class="nav-in">
+    <a class="brand" href="./">
+      <span class="brand-mark"><img src="logo-canal.jpeg" alt=""/></span>
+      <span>
+        <span class="brand-t">Predicciones<b> Pro</b></span>
+        <span class="brand-s">Modelo BSD en vivo</span>
+      </span>
+    </a>
+    <nav class="links">
+      <a href="#picks">Picks</a>
+      <a href="#destacado">Destacado</a>
+      <a href="#tablero">Tablero</a>
+      <a href="#como">Cómo se arma</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:8px">
+      <a class="tg" href="https://t.me/" target="_blank" rel="noopener">Telegram</a>
+      <button class="ham" id="ham" type="button" aria-label="Menú">☰</button>
+    </div>
+  </div>
+  <nav class="drawer" id="drawer">
+    <a href="#picks">Picks</a>
+    <a href="#destacado">Destacado</a>
+    <a href="#tablero">Tablero</a>
+    <a href="#como">Cómo se arma</a>
+  </nav>
+</header>
 
-<section class="wrap hero">
+<section class="hero">
   <div class="hero-copy">
     <p class="live"><span class="dot"></span> En línea · modelo BSD</p>
-    <h1>Predicciones<span style="color:var(--primary)"> Pro</span></h1>
+    <h1>Predicciones<span> Pro</span></h1>
     <p class="sub">Pronósticos de fútbol. Un pick por partido.</p>
     <div class="stats">
       <div class="stat"><strong id="st-hoy">-</strong><small>Picks hoy</small></div>
@@ -117,7 +198,7 @@ h1{font-size:clamp(2rem,5vw,3rem);font-weight:900;letter-spacing:-.03em}
   <div class="mascot"><img src="logo-canal.jpeg" alt="Mascota Predicciones Pro"/></div>
 </section>
 
-<div class="wrap">
+<div class="page">
   <section class="sec feat" id="destacado">
     <h2>Destacado</h2>
     <p class="hint">El de más confianza entre los que todavía no se juegan.</p>
@@ -132,22 +213,104 @@ h1{font-size:clamp(2rem,5vw,3rem);font-weight:900;letter-spacing:-.03em}
       <button class="chip" data-day="manana" type="button">Mañana</button>
       <button class="chip" data-day="finde" type="button">Finde</button>
       <button class="chip" data-day="all" type="button">Todos</button>
-      <button class="chip" data-live="1" type="button">En vivo</button>
-      <button class="chip" data-ev="1" type="button">Solo EV+</button>
+      <button class="chip" id="liveBtn" type="button">En vivo</button>
+      <button class="chip" id="evBtn" type="button">Solo EV+</button>
+    </div>
+    <div class="filters">
+      <label class="sel"><span>Liga</span>
+        <select id="lg">
+          <option value="all">Todas</option>
+          <option value="ucl">Champions</option>
+          <option value="lib">Libertadores</option>
+          <option value="suda">Sudamericana</option>
+          <option value="arg">Argentina</option>
+          <option value="bra">Brasil</option>
+          <option value="eng">Premier</option>
+          <option value="esp">La Liga</option>
+          <option value="ita">Serie A</option>
+          <option value="ger">Bundesliga</option>
+          <option value="fra">Ligue 1</option>
+          <option value="por">Portugal</option>
+          <option value="europa">Europa</option>
+        </select>
+      </label>
+      <label class="sel"><span>Mercado</span>
+        <select id="mk">
+          <option value="all">Todos</option>
+          <option value="1x2">1X2</option>
+          <option value="btts">BTTS</option>
+          <option value="ou">Goles</option>
+        </select>
+      </label>
+      <label class="sel"><span>Confianza</span>
+        <select id="cf">
+          <option value="all">Todas</option>
+          <option value="max">Máxima</option>
+          <option value="alta">Alta</option>
+          <option value="media">Media</option>
+        </select>
+      </label>
     </div>
     <div class="grid" id="grid"></div>
     <p class="stamp" id="stamp"></p>
   </section>
+
+  <section class="sec" id="tablero">
+    <h2>Tablero</h2>
+    <div class="stats" style="max-width:28rem;margin-top:1rem">
+      <div class="stat"><strong id="tb-pend">-</strong><small>Por jugar</small></div>
+      <div class="stat"><strong id="tb-live">-</strong><small>En vivo</small></div>
+      <div class="stat"><strong id="tb-done">-</strong><small>Final</small></div>
+    </div>
+    <ul class="board" id="board"></ul>
+  </section>
+
+  <section class="sec" id="como">
+    <h2>Cómo se arma</h2>
+    <div class="steps">
+      <div class="step"><p class="n">01</p><h3>Modelo BSD</h3><p>1X2, xG, BTTS y goles. Un mercado por partido.</p></div>
+      <div class="step"><p class="n">02</p><h3>Cuota</h3><p>EV = modelo × cuota − 1. Se publica el mercado más limpio ≥ 1.50.</p></div>
+      <div class="step"><p class="n">03</p><h3>Regla 1.50</h3><p>Nada de favoritos a 1.10. Over 2.5 no entra automático.</p></div>
+    </div>
+    <p class="stamp">+18 · Educativo. No es consejo financiero.</p>
+  </section>
 </div>
 
-<footer class="foot-site"><div class="foot-grid">
-  <div><p style="color:var(--fg);font-weight:900">Predicciones<span style="color:var(--primary)"> Pro</span></p><p style="margin-top:10px">Picks con modelo BSD. Cuota mínima 1.50. Sin montos.</p></div>
-  <div><p>Snapshot estático para GitHub Pages. El tablero en vivo corre en el preview.</p></div>
-  <div><p>+18 · Educativo · No es consejo financiero. Jugá responsable.</p></div>
-</div></footer>
+<footer class="site-foot">
+  <div class="fg">
+    <div>
+      <p class="t">Predicciones<span style="color:var(--primary)"> Pro</span></p>
+      <p style="margin-top:12px;max-width:16rem">Picks con modelo BSD. Cuota mínima 1.50.</p>
+    </div>
+    <div>
+      <h4>Secciones</h4>
+      <ul>
+        <li><a href="#picks">Picks</a></li>
+        <li><a href="#destacado">Destacado</a></li>
+        <li><a href="#tablero">Tablero</a></li>
+        <li><a href="#como">Cómo se arma</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Canal</h4>
+      <ul><li><a href="https://t.me/" target="_blank" rel="noopener">Telegram</a></li></ul>
+      <p style="margin-top:24px;font-size:12px">+18 · Educativo · No es consejo financiero. Jugá responsable.</p>
+    </div>
+  </div>
+</footer>
+
+<button class="fab" id="fab" type="button" aria-label="Asistente IA" title="Asistente">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/></svg>
+</button>
+<div class="chat" id="chat">
+  <div class="chat-h"><span>Asistente</span><button type="button" id="chatx" style="background:none;border:0;color:var(--muted);font-size:18px">✕</button></div>
+  <div class="chat-b" id="chatb"><div class="msg bot">Asistente de picks. Preguntame por un partido o por qué se descartó un favorito corto.</div></div>
+  <div class="chat-f"><input id="chati" placeholder="Ej: Palmeiras o cuota 1.50"/><button type="button" id="chats">Enviar</button></div>
+</div>
+
 <script>
-const PICKS = [{"id": "bsd-599509", "league": "Libertadores", "leagueKey": "lib", "kickoff": "2026-09-09T22:00:00Z", "status": "2nd_half", "home": "Palmeiras", "away": "LDU", "market": "Más de 2.5", "marketKey": "ou", "odds": 2.11, "impliedPct": 47.4, "modelPct": 47.7, "evPct": 0.6, "conf": 75, "pH": 0.721, "pD": 0.192, "pA": 0.087, "bullets": ["Modelo BSD dc-blend-v1: Palmeiras 72.1% · Empate 19.2% · LDU 8.7%", "xG 1.69 – 0.65 (media 2.34) · marcador más probable 1-0", "BTTS 37.0% · Over 2.5 47.7% · Over 3.5 25.1%"], "analysis": "Más de 2.5 @ 2.11. Media de goles 2.34 y 1-0 como línea base. Edge chico, pero del lado correcto del precio.", "rejected": "Se descarta Palmeiras @ 1.36 (regla cuota mínima 1.50).", "homeCrest": "https://media.api-sports.io/football/teams/121.png", "awayCrest": "https://media.api-sports.io/football/teams/1158.png", "homeScore": null, "awayScore": null, "minute": null}, {"id": "bsd-599510", "league": "Sudamericana", "leagueKey": "suda", "kickoff": "2026-09-09T22:00:00Z", "status": "2nd_half", "home": "Santos", "away": "Atlético Mineiro", "market": "Menos de 2.5", "marketKey": "ou", "odds": 1.54, "impliedPct": 64.9, "modelPct": 60.8, "evPct": -6.4, "conf": 52, "pH": 0.419, "pD": 0.305, "pA": 0.276, "bullets": ["Modelo BSD dc-blend-v1: Santos 41.9% · Empate 30.5% · Atlético Mineiro 27.6%", "xG 1.44 – 1.01 (media 2.45) · marcador más probable 1-1", "BTTS 46.1% · Over 2.5 39.2% · Over 3.5 21.0%"], "analysis": "Menos de 2.5 @ 1.54. Media de goles 2.45 y 1-1 como línea base. El libro está un poco más agresivo que el modelo; se publica porque es el mercado ≥ 1.50 más limpio.", "rejected": "Se descarta Over 2.5 no se publica por default (regla cuota mínima 1.50).", "homeCrest": "https://media.api-sports.io/football/teams/128.png", "awayCrest": "https://media.api-sports.io/football/teams/1062.png", "homeScore": null, "awayScore": null, "minute": null}, {"id": "bsd-600963", "league": "Libertadores", "leagueKey": "lib", "kickoff": "2026-09-10T00:30:00Z", "status": "notstarted", "home": "Estudiantes de La Plata", "away": "Corinthians", "market": "Más de 1.5", "marketKey": "ou", "odds": 1.84, "impliedPct": 54.3, "modelPct": 52.5, "evPct": -3.4, "conf": 52, "pH": 0.39899999999999997, "pD": 0.35100000000000003, "pA": 0.249, "bullets": ["Modelo BSD dc-blend-v1: Estudiantes de La Plata 39.9% · Empate 35.1% · Corinthians 24.9%", "xG 1.28 – 0.76 (media 2.04) · marcador más probable 1-0", "BTTS 34.9% · Over 2.5 26.6% · Over 3.5 12.6%"], "analysis": "Más de 1.5 @ 1.84. Media de goles 2.04 y 1-0 como línea base. El libro está un poco más agresivo que el modelo; se publica porque es el mercado ≥ 1.50 más limpio.", "rejected": "Se descarta Over 2.5 no se publica por default (regla cuota mínima 1.50).", "homeCrest": "https://media.api-sports.io/football/teams/450.png", "awayCrest": "https://media.api-sports.io/football/teams/131.png", "homeScore": null, "awayScore": null, "minute": null}, {"id": "bsd-601149", "league": "Champions", "leagueKey": "ucl", "kickoff": "2026-09-10T16:45:00Z", "status": "notstarted", "home": "PSV Eindhoven", "away": "Shakhtar Donetsk", "market": "Más de 3.5", "marketKey": "ou", "odds": 2.11, "impliedPct": 47.4, "modelPct": 45.8, "evPct": -3.4, "conf": 66, "pH": 0.6629999999999999, "pD": 0.18899999999999997, "pA": 0.14800000000000002, "bullets": ["Modelo BSD dc-blend-v1: PSV Eindhoven 66.3% · Empate 18.9% · Shakhtar Donetsk 14.8%", "xG 2.51 – 1.15 (media 3.66) · marcador más probable 2-1", "BTTS 58.7% · Over 2.5 66.1% · Over 3.5 45.8%"], "analysis": "Más de 3.5 @ 2.11. Media de goles 3.66 y 2-1 como línea base. El libro está un poco más agresivo que el modelo; se publica porque es el mercado ≥ 1.50 más limpio.", "rejected": "Se descarta PSV Eindhoven @ 1.42 · Over 2.5 @ 1.42 (regla cuota mínima 1.50).", "homeCrest": "https://media.api-sports.io/football/teams/197.png", "awayCrest": "https://media.api-sports.io/football/teams/555.png", "homeScore": null, "awayScore": null, "minute": null}, {"id": "bsd-601109", "league": "Champions", "leagueKey": "ucl", "kickoff": "2026-09-10T16:45:00Z", "status": "notstarted", "home": "Fenerbahçe", "away": "AS Roma", "market": "Ambos marcan", "marketKey": "btts", "odds": 1.58, "impliedPct": 63.3, "modelPct": 58.9, "evPct": -6.9, "conf": 52, "pH": 0.294, "pD": 0.271, "pA": 0.435, "bullets": ["Modelo BSD dc-blend-v1: Fenerbahçe 29.4% · Empate 27.1% · AS Roma 43.5%", "xG 1.91 – 1.25 (media 3.16) · marcador más probable 1-1", "BTTS 58.9% · Over 2.5 55.1% · Over 3.5 34.4%"], "analysis": "Ambos marcan @ 1.58 con 58.9% del modelo (xG 3.16, 1-1). El libro está un poco más agresivo que el modelo; se publica porque es el mercado ≥ 1.50 más limpio.", "rejected": "Se descarta Over 2.5 no se publica por default (regla cuota mínima 1.50).", "homeCrest": "https://media.api-sports.io/football/teams/611.png", "awayCrest": "https://media.api-sports.io/football/teams/497.png", "homeScore": null, "awayScore": null, "minute": null}, {"id": "bsd-601062", "league": "Champions", "leagueKey": "ucl", "kickoff": "2026-09-10T19:00:00Z", "status": "notstarted", "home": "Manchester United", "away": "Sabah FK", "market": "Menos de 3.5", "marketKey": "ou", "odds": 2.22, "impliedPct": 45.0, "modelPct": 46.9, "evPct": 4.1, "conf": 91, "pH": 0.855, "pD": 0.10300000000000001, "pA": 0.043, "bullets": ["Modelo BSD dc-blend-v1: Manchester United 85.5% · Empate 10.3% · Sabah FK 4.3%", "xG 1.80 – 1.53 (media 3.33) · marcador más probable 1-1", "BTTS 49.0% · Over 2.5 75.3% · Over 3.5 53.1%"], "analysis": "Menos de 3.5 @ 2.22. Media de goles 3.33 y 1-1 como línea base. Edge chico, pero del lado correcto del precio.", "rejected": "Se descarta Manchester United @ 1.11 · Over 2.5 @ 1.24 (regla cuota mínima 1.50).", "homeCrest": "https://media.api-sports.io/football/teams/33.png", "awayCrest": "https://media.api-sports.io/football/teams/3563.png", "homeScore": null, "awayScore": null, "minute": null}, {"id": "bsd-601067", "league": "Champions", "leagueKey": "ucl", "kickoff": "2026-09-10T19:00:00Z", "status": "notstarted", "home": "Bayern München", "away": "Bodø/Glimt", "market": "Ambos marcan", "marketKey": "btts", "odds": 1.63, "impliedPct": 61.3, "modelPct": 58.0, "evPct": -5.5, "conf": 87, "pH": 0.865, "pD": 0.084, "pA": 0.051, "bullets": ["Modelo BSD dc-blend-v1: Bayern München 86.5% · Empate 8.4% · Bodø/Glimt 5.1%", "xG 2.40 – 1.39 (media 3.79) · marcador más probable 2-1", "BTTS 58.0% · Over 2.5 83.0% · Over 3.5 63.4%"], "analysis": "Ambos marcan @ 1.63 con 58.0% del modelo (xG 3.79, 2-1). El libro está un poco más agresivo que el modelo; se publica porque es el mercado ≥ 1.50 más limpio.", "rejected": "Se descarta Bayern München @ 1.10 · Over 2.5 @ 1.12 (regla cuota mínima 1.50).", "homeCrest": "https://media.api-sports.io/football/teams/157.png", "awayCrest": "https://media.api-sports.io/football/teams/737.png", "homeScore": null, "awayScore": null, "minute": null}, {"id": "bsd-601125", "league": "Champions", "leagueKey": "ucl", "kickoff": "2026-09-10T19:00:00Z", "status": "notstarted", "home": "Como", "away": "RB Leipzig", "market": "Menos de 3.5", "marketKey": "ou", "odds": 1.54, "impliedPct": 64.9, "modelPct": 60.8, "evPct": -6.4, "conf": 52, "pH": 0.508, "pD": 0.245, "pA": 0.247, "bullets": ["Modelo BSD dc-blend-v1: Como 50.8% · Empate 24.5% · RB Leipzig 24.7%", "xG 2.11 – 1.19 (media 3.30) · marcador más probable 2-1", "BTTS 60.7% · Over 2.5 60.0% · Over 3.5 39.2%"], "analysis": "Menos de 3.5 @ 1.54. Media de goles 3.30 y 2-1 como línea base. El libro está un poco más agresivo que el modelo; se publica porque es el mercado ≥ 1.50 más limpio.", "rejected": "Se descarta Over 2.5 no se publica por default (regla cuota mínima 1.50).", "homeCrest": "https://media.api-sports.io/football/teams/895.png", "awayCrest": "https://media.api-sports.io/football/teams/173.png", "homeScore": null, "awayScore": null, "minute": null}, {"id": "bsd-601154", "league": "Champions", "leagueKey": "ucl", "kickoff": "2026-09-10T19:00:00Z", "status": "notstarted", "home": "Slavia Praha", "away": "RC Lens", "market": "Ambos marcan", "marketKey": "btts", "odds": 1.6, "impliedPct": 62.5, "modelPct": 58.5, "evPct": -6.4, "conf": 52, "pH": 0.374, "pD": 0.27399999999999997, "pA": 0.35200000000000004, "bullets": ["Modelo BSD dc-blend-v1: Slavia Praha 37.4% · Empate 27.4% · RC Lens 35.2%", "xG 1.39 – 1.89 (media 3.28) · marcador más probable 1-1", "BTTS 58.5% · Over 2.5 53.8% · Over 3.5 34.3%"], "analysis": "Ambos marcan @ 1.60 con 58.5% del modelo (xG 3.28, 1-1). El libro está un poco más agresivo que el modelo; se publica porque es el mercado ≥ 1.50 más limpio.", "rejected": "Se descarta Over 2.5 no se publica por default (regla cuota mínima 1.50).", "homeCrest": "https://media.api-sports.io/football/teams/560.png", "awayCrest": "https://media.api-sports.io/football/teams/116.png", "homeScore": null, "awayScore": null, "minute": null}, {"id": "bsd-215509", "league": "Liga Portugal", "leagueKey": "por", "kickoff": "2026-09-10T19:15:00Z", "status": "notstarted", "home": "Estrela Amadora", "away": "Sporting Braga", "market": "Menos de 2.5", "marketKey": "ou", "odds": 1.83, "impliedPct": 54.6, "modelPct": 51.6, "evPct": -5.6, "conf": 55, "pH": 0.198, "pD": 0.256, "pA": 0.545, "bullets": ["Modelo BSD dc-blend-v1: Estrela Amadora 19.8% · Empate 25.6% · Sporting Braga 54.5%", "xG 0.94 – 1.74 (media 2.68) · marcador más probable 0-1", "BTTS 49.5% · Over 2.5 48.4% · Over 3.5 27.4%"], "analysis": "Menos de 2.5 @ 1.83. Media de goles 2.68 y 0-1 como línea base. El libro está un poco más agresivo que el modelo; se publica porque es el mercado ≥ 1.50 más limpio.", "rejected": "Se descarta Over 2.5 no se publica por default (regla cuota mínima 1.50).", "homeCrest": "https://media.api-sports.io/football/teams/15130.png", "awayCrest": "https://media.api-sports.io/football/teams/217.png", "homeScore": null, "awayScore": null, "minute": null}, {"id": "bsd-600966", "league": "Sudamericana", "leagueKey": "suda", "kickoff": "2026-09-11T00:30:00Z", "status": "notstarted", "home": "Cienciano", "away": "Montevideo City Torque", "market": "Menos de 2.5", "marketKey": "ou", "odds": 1.98, "impliedPct": 50.5, "modelPct": 49.3, "evPct": -2.4, "conf": 58, "pH": 0.583, "pD": 0.243, "pA": 0.174, "bullets": ["Modelo BSD dc-blend-v1: Cienciano 58.3% · Empate 24.3% · Montevideo City Torque 17.4%", "xG 1.22 – 1.05 (media 2.27) · marcador más probable 1-1", "BTTS 50.2% · Over 2.5 50.7% · Over 3.5 26.9%"], "analysis": "Menos de 2.5 @ 1.98. Media de goles 2.27 y 1-1 como línea base. El libro está un poco más agresivo que el modelo; se publica porque es el mercado ≥ 1.50 más limpio.", "rejected": "Se descarta Over 2.5 no se publica por default (regla cuota mínima 1.50).", "homeCrest": "https://media.api-sports.io/football/teams/2562.png", "awayCrest": "https://media.api-sports.io/football/teams/2474.png", "homeScore": null, "awayScore": null, "minute": null}, {"id": "bsd-601010", "league": "Libertadores", "leagueKey": "lib", "kickoff": "2026-09-11T00:30:00Z", "status": "notstarted", "home": "Independiente del Valle", "away": "Flamengo", "market": "Menos de 2.5", "marketKey": "ou", "odds": 1.59, "impliedPct": 62.9, "modelPct": 58.9, "evPct": -6.3, "conf": 52, "pH": 0.36200000000000004, "pD": 0.304, "pA": 0.33399999999999996, "bullets": ["Modelo BSD dc-blend-v1: Independiente del Valle 36.2% · Empate 30.4% · Flamengo 33.4%", "xG 1.18 – 1.14 (media 2.32) · marcador más probable 1-1", "BTTS 48.6% · Over 2.5 41.1% · Over 3.5 21.4%"], "analysis": "Menos de 2.5 @ 1.59. Media de goles 2.32 y 1-1 como línea base. El libro está un poco más agresivo que el modelo; se publica porque es el mercado ≥ 1.50 más limpio.", "rejected": "Se descarta Over 2.5 no se publica por default (regla cuota mínima 1.50).", "homeCrest": "https://media.api-sports.io/football/teams/1156.png", "awayCrest": "https://media.api-sports.io/football/teams/127.png", "homeScore": null, "awayScore": null, "minute": null}, {"id": "bsd-213687", "league": "Bundesliga", "leagueKey": "ger", "kickoff": "2026-09-11T18:30:00Z", "status": "notstarted", "home": "Union Berlin", "away": "Schalke 04", "market": "Menos de 3.5", "marketKey": "ou", "odds": 1.54, "impliedPct": 64.9, "modelPct": 61.5, "evPct": -5.3, "conf": 52, "pH": 0.415, "pD": 0.261, "pA": 0.324, "bullets": ["Modelo BSD dc-blend-v1: Union Berlin 41.5% · Empate 26.1% · Schalke 04 32.4%", "xG 1.88 – 1.28 (media 3.16) · marcador más probable 1-1", "BTTS 62.3% · Over 2.5 59.7% · Over 3.5 38.5%"], "analysis": "Menos de 3.5 @ 1.54. Media de goles 3.16 y 1-1 como línea base. El libro está un poco más agresivo que el modelo; se publica porque es el mercado ≥ 1.50 más limpio.", "rejected": "Se descarta Over 2.5 no se publica por default (regla cuota mínima 1.50).", "homeCrest": "https://media.api-sports.io/football/teams/182.png", "awayCrest": "https://media.api-sports.io/football/teams/174.png", "homeScore": null, "awayScore": null, "minute": null}, {"id": "bsd-210096", "league": "Serie A", "leagueKey": "ita", "kickoff": "2026-09-11T18:45:00Z", "status": "notstarted", "home": "Venezia", "away": "Fiorentina", "market": "Menos de 2.5", "marketKey": "ou", "odds": 2.02, "impliedPct": 49.5, "modelPct": 47.2, "evPct": -4.7, "conf": 52, "pH": 0.318, "pD": 0.281, "pA": 0.401, "bullets": ["Modelo BSD dc-blend-v1: Venezia 31.8% · Empate 28.1% · Fiorentina 40.1%", "xG 1.23 – 1.51 (media 2.74) · marcador más probable 1-1", "BTTS 57.3% · Over 2.5 52.8% · Over 3.5 31.1%"], "analysis": "Menos de 2.5 @ 2.02. Media de goles 2.74 y 1-1 como línea base. El libro está un poco más agresivo que el modelo; se publica porque es el mercado ≥ 1.50 más limpio.", "rejected": "Se descarta Over 2.5 no se publica por default (regla cuota mínima 1.50).", "homeCrest": "https://media.api-sports.io/football/teams/517.png", "awayCrest": "https://media.api-sports.io/football/teams/502.png", "homeScore": null, "awayScore": null, "minute": null}, {"id": "bsd-210472", "league": "Ligue 1", "leagueKey": "fra", "kickoff": "2026-09-11T18:45:00Z", "status": "notstarted", "home": "Stade Rennais", "away": "Olympique de Marseille", "market": "Menos de 3.5", "marketKey": "ou", "odds": 1.6, "impliedPct": 62.5, "modelPct": 59.3, "evPct": -5.1, "conf": 52, "pH": 0.44299999999999995, "pD": 0.249, "pA": 0.308, "bullets": ["Modelo BSD dc-blend-v1: Stade Rennais 44.3% · Empate 24.9% · Olympique de Marseille 30.8%", "xG 1.70 – 1.61 (media 3.31) · marcador más probable 1-1", "BTTS 63.5% · Over 2.5 61.5% · Over 3.5 40.7%"], "analysis": "Menos de 3.5 @ 1.60. Media de goles 3.31 y 1-1 como línea base. El libro está un poco más agresivo que el modelo; se publica porque es el mercado ≥ 1.50 más limpio.", "rejected": "Se descarta Over 2.5 no se publica por default (regla cuota mínima 1.50).", "homeCrest": "https://media.api-sports.io/football/teams/94.png", "awayCrest": "https://media.api-sports.io/football/teams/81.png", "homeScore": null, "awayScore": null, "minute": null}, {"id": "bsd-213568", "league": "La Liga", "leagueKey": "esp", "kickoff": "2026-09-11T19:00:00Z", "status": "notstarted", "home": "Sevilla", "away": "Valencia", "market": "Menos de 2.5", "marketKey": "ou", "odds": 1.6, "impliedPct": 62.5, "modelPct": 58.8, "evPct": -5.9, "conf": 52, "pH": 0.436, "pD": 0.298, "pA": 0.266, "bullets": ["Modelo BSD dc-blend-v1: Sevilla 43.6% · Empate 29.8% · Valencia 26.6%", "xG 1.43 – 1.19 (media 2.62) · marcador más probable 1-1", "BTTS 47.8% · Over 2.5 41.2% · Over 3.5 22.9%", "H2H 107 pj · media 2.38 goles · 39-24-44"], "analysis": "Menos de 2.5 @ 1.60. Media de goles 2.62 y 1-1 como línea base. El libro está un poco más agresivo que el modelo; se publica porque es el mercado ≥ 1.50 más limpio.", "rejected": "Se descarta Over 2.5 no se publica por default (regla cuota mínima 1.50).", "homeCrest": "https://media.api-sports.io/football/teams/536.png", "awayCrest": "https://media.api-sports.io/football/teams/532.png", "homeScore": null, "awayScore": null, "minute": null}, {"id": "bsd-223705", "league": "Liga Profesional", "leagueKey": "arg", "kickoff": "2026-09-11T20:00:00Z", "status": "notstarted", "home": "Newell's Old Boys", "away": "Vélez Sarsfield", "market": "Más de 1.5", "marketKey": "ou", "odds": 1.5, "impliedPct": 66.7, "modelPct": 62.5, "evPct": -6.2, "conf": 52, "pH": 0.353, "pD": 0.318, "pA": 0.33, "bullets": ["Modelo BSD dc-blend-v1: Newell's Old Boys 35.3% · Empate 31.8% · Vélez Sarsfield 33.0%", "xG 0.97 – 1.14 (media 2.11) · marcador más probable 1-1", "BTTS 44.3% · Over 2.5 36.3% · Over 3.5 18.2%", "H2H 26 pj · media 1.96 goles · 11-5-10"], "analysis": "Más de 1.5 @ 1.50. Media de goles 2.11 y 1-1 como línea base. El libro está un poco más agresivo que el modelo; se publica porque es el mercado ≥ 1.50 más limpio.", "rejected": "Se descarta Over 2.5 no se publica por default (regla cuota mínima 1.50).", "homeCrest": "https://media.api-sports.io/football/teams/457.png", "awayCrest": "https://media.api-sports.io/football/teams/438.png", "homeScore": null, "awayScore": null, "minute": null}, {"id": "bsd-223699", "league": "Liga Profesional", "leagueKey": "arg", "kickoff": "2026-09-11T22:15:00Z", "status": "notstarted", "home": "Defensa y Justicia", "away": "Gimnasia y Esgrima Mendoza", "market": "Menos de 2.5", "marketKey": "ou", "odds": 1.61, "impliedPct": 62.1, "modelPct": 58.1, "evPct": -6.5, "conf": 52, "pH": 0.42100000000000004, "pD": 0.289, "pA": 0.289, "bullets": ["Modelo BSD dc-blend-v1: Defensa y Justicia 42.1% · Empate 28.9% · Gimnasia y Esgrima Mendoza 28.9%", "xG 1.39 – 1.11 (media 2.50) · marcador más probable 1-1", "BTTS 48.2% · Over 2.5 41.9% · Over 3.5 22.2%"], "analysis": "Menos de 2.5 @ 1.61. Media de goles 2.50 y 1-1 como línea base. El libro está un poco más agresivo que el modelo; se publica porque es el mercado ≥ 1.50 más limpio.", "rejected": "Se descarta Over 2.5 no se publica por default (regla cuota mínima 1.50).", "homeCrest": "https://media.api-sports.io/football/teams/442.png", "awayCrest": "https://media.api-sports.io/football/teams/10620.png", "homeScore": null, "awayScore": null, "minute": null}, {"id": "bsd-7258", "league": "Brasileirão", "leagueKey": "bra", "kickoff": "2026-09-12T00:00:00Z", "status": "notstarted", "home": "Coritiba", "away": "Athletico", "market": "Menos de 2.5", "marketKey": "ou", "odds": 1.53, "impliedPct": 65.4, "modelPct": 60.7, "evPct": -7.1, "conf": 52, "pH": 0.34700000000000003, "pD": 0.306, "pA": 0.34700000000000003, "bullets": ["Modelo BSD dc-blend-v1: Coritiba 34.7% · Empate 30.6% · Athletico 34.7%", "xG 1.26 – 1.25 (media 2.51) · marcador más probable 1-1", "BTTS 47.1% · Over 2.5 39.3% · Over 3.5 21.9%", "H2H 32 pj · media 1.78 goles · 9-10-13"], "analysis": "Menos de 2.5 @ 1.53. Media de goles 2.51 y 1-1 como línea base. El libro está un poco más agresivo que el modelo; se publica porque es el mercado ≥ 1.50 más limpio.", "rejected": "Se descarta Over 2.5 no se publica por default (regla cuota mínima 1.50).", "homeCrest": "https://media.api-sports.io/football/teams/147.png", "awayCrest": "https://media.api-sports.io/football/teams/134.png", "homeScore": null, "awayScore": null, "minute": null}];
-const GENERATED = "2026-09-09T23:55:18.855219+00:00";
+const PICKS = [{"id": "bsd-600963", "league": "Libertadores", "leagueKey": "lib", "kickoff": "2026-09-10T00:30:00Z", "status": "notstarted", "home": "Estudiantes de La Plata", "away": "Corinthians", "market": "Más de 1.5", "marketKey": "ou", "odds": 1.84, "impliedPct": 54.3, "modelPct": 52.5, "evPct": -3.4, "conf": 52, "pH": 0.39899999999999997, "pD": 0.35100000000000003, "pA": 0.249, "bullets": ["Modelo BSD dc-blend-v1: Estudiantes de La Plata 39.9% · Empate 35.1% · Corinthians 24.9%", "xG 1.28 – 0.75 (media 2.03) · marcador más probable 1-0", "BTTS 34.8% · Over 2.5 26.6% · Over 3.5 12.6%"], "analysis": "Más de 1.5 @ 1.84. Media de goles 2.03 y 1-0 como línea base. El libro está un poco más agresivo que el modelo; se publica porque es el mercado ≥ 1.50 más limpio.", "rejected": "Se descarta Over 2.5 no se publica por default (regla cuota mínima 1.50).", "homeCrest": "https://media.api-sports.io/football/teams/450.png", "awayCrest": "https://media.api-sports.io/football/teams/131.png", "homeScore": null, "awayScore": null, "minute": null}, {"id": "bsd-601149", "league": "Champions", "leagueKey": "ucl", "kickoff": "2026-09-10T16:45:00Z", "status": "notstarted", "home": "PSV Eindhoven", "away": "Shakhtar Donetsk", "market": "Más de 3.5", "marketKey": "ou", "odds": 2.11, "impliedPct": 47.4, "modelPct": 45.8, "evPct": -3.4, "conf": 66, "pH": 0.6629999999999999, "pD": 0.18899999999999997, "pA": 0.14800000000000002, "bullets": ["Modelo BSD dc-blend-v1: PSV Eindhoven 66.3% · Empate 18.9% · Shakhtar Donetsk 14.8%", "xG 2.51 – 1.15 (media 3.66) · marcador más probable 2-1", "BTTS 59.0% · Over 2.5 66.1% · Over 3.5 45.8%"], "analysis": "Más de 3.5 @ 2.11. Media de goles 3.66 y 2-1 como línea base. El libro está un poco más agresivo que el modelo; se publica porque es el mercado ≥ 1.50 más limpio.", "rejected": "Se descarta PSV Eindhoven @ 1.42 · Over 2.5 @ 1.42 (regla cuota mínima 1.50).", "homeCrest": "https://media.api-sports.io/football/teams/197.png", "awayCrest": "https://media.api-sports.io/football/teams/555.png", "homeScore": null, "awayScore": null, "minute": null}, {"id": "bsd-601109", "league": "Champions", "leagueKey": "ucl", "kickoff": "2026-09-10T16:45:00Z", "status": "notstarted", "home": "Fenerbahçe", "away": "AS Roma", "market": "Ambos marcan", "marketKey": "btts", "odds": 1.58, "impliedPct": 63.3, "modelPct": 58.9, "evPct": -6.9, "conf": 52, "pH": 0.294, "pD": 0.271, "pA": 0.435, "bullets": ["Modelo BSD dc-blend-v1: Fenerbahçe 29.4% · Empate 27.1% · AS Roma 43.5%", "xG 1.91 – 1.25 (media 3.16) · marcador más probable 1-1", "BTTS 58.9% · Over 2.5 55.1% · Over 3.5 34.4%"], "analysis": "Ambos marcan @ 1.58 con 58.9% del modelo (xG 3.16, 1-1). El libro está un poco más agresivo que el modelo; se publica porque es el mercado ≥ 1.50 más limpio.", "rejected": "Se descarta Over 2.5 no se publica por default (regla cuota mínima 1.50).", "homeCrest": "https://media.api-sports.io/football/teams/611.png", "awayCrest": "https://media.api-sports.io/football/teams/497.png", "homeScore": null, "awayScore": null, "minute": null}, {"id": "bsd-601062", "league": "Champions", "leagueKey": "ucl", "kickoff": "2026-09-10T19:00:00Z", "status": "notstarted", "home": "Manchester United", "away": "Sabah FK", "market": "Menos de 3.5", "marketKey": "ou", "odds": 2.22, "impliedPct": 45.0, "modelPct": 46.9, "evPct": 4.1, "conf": 91, "pH": 0.855, "pD": 0.10300000000000001, "pA": 0.043, "bullets": ["Modelo BSD dc-blend-v1: Manchester United 85.5% · Empate 10.3% · Sabah FK 4.3%", "xG 1.80 – 1.53 (media 3.33) · marcador más probable 1-1", "BTTS 49.0% · Over 2.5 75.3% · Over 3.5 53.1%"], "analysis": "Menos de 3.5 @ 2.22. Media de goles 3.33 y 1-1 como línea base. Edge chico, pero del lado correcto del precio.", "rejected": "Se descarta Manchester United @ 1.11 · Over 2.5 @ 1.24 (regla cuota mínima 1.50).", "homeCrest": "https://media.api-sports.io/football/teams/33.png", "awayCrest": "https://media.api-sports.io/football/teams/3563.png", "homeScore": null, "awayScore": null, "minute": null}, {"id": "bsd-601067", "league": "Champions", "leagueKey": "ucl", "kickoff": "2026-09-10T19:00:00Z", "status": "notstarted", "home": "Bayern München", "away": "Bodø/Glimt", "market": "Ambos marcan", "marketKey": "btts", "odds": 1.63, "impliedPct": 61.3, "modelPct": 57.9, "evPct": -5.6, "conf": 87, "pH": 0.865, "pD": 0.084, "pA": 0.051, "bullets": ["Modelo BSD dc-blend-v1: Bayern München 86.5% · Empate 8.4% · Bodø/Glimt 5.1%", "xG 2.40 – 1.39 (media 3.79) · marcador más probable 2-1", "BTTS 57.9% · Over 2.5 83.0% · Over 3.5 63.4%"], "analysis": "Ambos marcan @ 1.63 con 57.9% del modelo (xG 3.79, 2-1). El libro está un poco más agresivo que el modelo; se publica porque es el mercado ≥ 1.50 más limpio.", "rejected": "Se descarta Bayern München @ 1.10 · Over 2.5 @ 1.12 (regla cuota mínima 1.50).", "homeCrest": "https://media.api-sports.io/football/teams/157.png", "awayCrest": "https://media.api-sports.io/football/teams/737.png", "homeScore": null, "awayScore": null, "minute": null}, {"id": "bsd-601154", "league": "Champions", "leagueKey": "ucl", "kickoff": "2026-09-10T19:00:00Z", "status": "notstarted", "home": "Slavia Praha", "away": "RC Lens", "market": "Ambos marcan", "marketKey": "btts", "odds": 1.6, "impliedPct": 62.5, "modelPct": 58.5, "evPct": -6.4, "conf": 52, "pH": 0.374, "pD": 0.27399999999999997, "pA": 0.35200000000000004, "bullets": ["Modelo BSD dc-blend-v1: Slavia Praha 37.4% · Empate 27.4% · RC Lens 35.2%", "xG 1.39 – 1.89 (media 3.28) · marcador más probable 1-1", "BTTS 58.5% · Over 2.5 53.8% · Over 3.5 34.4%"], "analysis": "Ambos marcan @ 1.60 con 58.5% del modelo (xG 3.28, 1-1). El libro está un poco más agresivo que el modelo; se publica porque es el mercado ≥ 1.50 más limpio.", "rejected": "Se descarta Over 2.5 no se publica por default (regla cuota mínima 1.50).", "homeCrest": "https://media.api-sports.io/football/teams/560.png", "awayCrest": "https://media.api-sports.io/football/teams/116.png", "homeScore": null, "awayScore": null, "minute": null}, {"id": "bsd-601125", "league": "Champions", "leagueKey": "ucl", "kickoff": "2026-09-10T19:00:00Z", "status": "notstarted", "home": "Como", "away": "RB Leipzig", "market": "Menos de 3.5", "marketKey": "ou", "odds": 1.54, "impliedPct": 64.9, "modelPct": 60.8, "evPct": -6.4, "conf": 52, "pH": 0.508, "pD": 0.245, "pA": 0.247, "bullets": ["Modelo BSD dc-blend-v1: Como 50.8% · Empate 24.5% · RB Leipzig 24.7%", "xG 2.11 – 1.19 (media 3.30) · marcador más probable 2-1", "BTTS 60.8% · Over 2.5 60.0% · Over 3.5 39.2%"], "analysis": "Menos de 3.5 @ 1.54. Media de goles 3.30 y 2-1 como línea base. El libro está un poco más agresivo que el modelo; se publica porque es el mercado ≥ 1.50 más limpio.", "rejected": "Se descarta Over 2.5 no se publica por default (regla cuota mínima 1.50).", "homeCrest": "https://media.api-sports.io/football/teams/895.png", "awayCrest": "https://media.api-sports.io/football/teams/173.png", "homeScore": null, "awayScore": null, "minute": null}, {"id": "bsd-215509", "league": "Liga Portugal", "leagueKey": "por", "kickoff": "2026-09-10T19:15:00Z", "status": "notstarted", "home": "Estrela Amadora", "away": "Sporting Braga", "market": "Menos de 2.5", "marketKey": "ou", "odds": 1.83, "impliedPct": 54.6, "modelPct": 51.4, "evPct": -5.9, "conf": 55, "pH": 0.19699999999999998, "pD": 0.256, "pA": 0.547, "bullets": ["Modelo BSD dc-blend-v1: Estrela Amadora 19.7% · Empate 25.6% · Sporting Braga 54.7%", "xG 0.94 – 1.74 (media 2.68) · marcador más probable 0-1", "BTTS 49.7% · Over 2.5 48.6% · Over 3.5 27.7%"], "analysis": "Menos de 2.5 @ 1.83. Media de goles 2.68 y 0-1 como línea base. El libro está un poco más agresivo que el modelo; se publica porque es el mercado ≥ 1.50 más limpio.", "rejected": "Se descarta Over 2.5 no se publica por default (regla cuota mínima 1.50).", "homeCrest": "https://media.api-sports.io/football/teams/15130.png", "awayCrest": "https://media.api-sports.io/football/teams/217.png", "homeScore": null, "awayScore": null, "minute": null}, {"id": "bsd-600966", "league": "Sudamericana", "leagueKey": "suda", "kickoff": "2026-09-11T00:30:00Z", "status": "notstarted", "home": "Cienciano", "away": "Montevideo City Torque", "market": "Menos de 2.5", "marketKey": "ou", "odds": 1.98, "impliedPct": 50.5, "modelPct": 48.5, "evPct": -4.0, "conf": 60, "pH": 0.601, "pD": 0.23399999999999999, "pA": 0.166, "bullets": ["Modelo BSD dc-blend-v1: Cienciano 60.1% · Empate 23.4% · Montevideo City Torque 16.6%", "xG 1.22 – 1.05 (media 2.27) · marcador más probable 1-1", "BTTS 50.2% · Over 2.5 51.5% · Over 3.5 27.3%"], "analysis": "Menos de 2.5 @ 1.98. Media de goles 2.27 y 1-1 como línea base. El libro está un poco más agresivo que el modelo; se publica porque es el mercado ≥ 1.50 más limpio.", "rejected": "Se descarta Over 2.5 no se publica por default (regla cuota mínima 1.50).", "homeCrest": "https://media.api-sports.io/football/teams/2562.png", "awayCrest": "https://media.api-sports.io/football/teams/2474.png", "homeScore": null, "awayScore": null, "minute": null}, {"id": "bsd-601010", "league": "Libertadores", "leagueKey": "lib", "kickoff": "2026-09-11T00:30:00Z", "status": "notstarted", "home": "Independiente del Valle", "away": "Flamengo", "market": "Menos de 2.5", "marketKey": "ou", "odds": 1.59, "impliedPct": 62.9, "modelPct": 59.1, "evPct": -6.0, "conf": 52, "pH": 0.359, "pD": 0.304, "pA": 0.337, "bullets": ["Modelo BSD dc-blend-v1: Independiente del Valle 35.9% · Empate 30.4% · Flamengo 33.7%", "xG 1.18 – 1.13 (media 2.31) · marcador más probable 1-1", "BTTS 48.5% · Over 2.5 40.9% · Over 3.5 21.3%"], "analysis": "Menos de 2.5 @ 1.59. Media de goles 2.31 y 1-1 como línea base. El libro está un poco más agresivo que el modelo; se publica porque es el mercado ≥ 1.50 más limpio.", "rejected": "Se descarta Over 2.5 no se publica por default (regla cuota mínima 1.50).", "homeCrest": "https://media.api-sports.io/football/teams/1156.png", "awayCrest": "https://media.api-sports.io/football/teams/127.png", "homeScore": null, "awayScore": null, "minute": null}, {"id": "bsd-213687", "league": "Bundesliga", "leagueKey": "ger", "kickoff": "2026-09-11T18:30:00Z", "status": "notstarted", "home": "Union Berlin", "away": "Schalke 04", "market": "Menos de 3.5", "marketKey": "ou", "odds": 1.54, "impliedPct": 64.9, "modelPct": 61.5, "evPct": -5.3, "conf": 52, "pH": 0.415, "pD": 0.261, "pA": 0.324, "bullets": ["Modelo BSD dc-blend-v1: Union Berlin 41.5% · Empate 26.1% · Schalke 04 32.4%", "xG 1.89 – 1.28 (media 3.17) · marcador más probable 1-1", "BTTS 62.3% · Over 2.5 59.7% · Over 3.5 38.5%"], "analysis": "Menos de 3.5 @ 1.54. Media de goles 3.17 y 1-1 como línea base. El libro está un poco más agresivo que el modelo; se publica porque es el mercado ≥ 1.50 más limpio.", "rejected": "Se descarta Over 2.5 no se publica por default (regla cuota mínima 1.50).", "homeCrest": "https://media.api-sports.io/football/teams/182.png", "awayCrest": "https://media.api-sports.io/football/teams/174.png", "homeScore": null, "awayScore": null, "minute": null}, {"id": "bsd-210096", "league": "Serie A", "leagueKey": "ita", "kickoff": "2026-09-11T18:45:00Z", "status": "notstarted", "home": "Venezia", "away": "Fiorentina", "market": "Menos de 2.5", "marketKey": "ou", "odds": 2.02, "impliedPct": 49.5, "modelPct": 47.2, "evPct": -4.7, "conf": 52, "pH": 0.318, "pD": 0.281, "pA": 0.401, "bullets": ["Modelo BSD dc-blend-v1: Venezia 31.8% · Empate 28.1% · Fiorentina 40.1%", "xG 1.23 – 1.51 (media 2.74) · marcador más probable 1-1", "BTTS 57.3% · Over 2.5 52.8% · Over 3.5 31.1%"], "analysis": "Menos de 2.5 @ 2.02. Media de goles 2.74 y 1-1 como línea base. El libro está un poco más agresivo que el modelo; se publica porque es el mercado ≥ 1.50 más limpio.", "rejected": "Se descarta Over 2.5 no se publica por default (regla cuota mínima 1.50).", "homeCrest": "https://media.api-sports.io/football/teams/517.png", "awayCrest": "https://media.api-sports.io/football/teams/502.png", "homeScore": null, "awayScore": null, "minute": null}, {"id": "bsd-210472", "league": "Ligue 1", "leagueKey": "fra", "kickoff": "2026-09-11T18:45:00Z", "status": "notstarted", "home": "Stade Rennais", "away": "Olympique de Marseille", "market": "Menos de 3.5", "marketKey": "ou", "odds": 1.6, "impliedPct": 62.5, "modelPct": 59.3, "evPct": -5.1, "conf": 52, "pH": 0.44299999999999995, "pD": 0.249, "pA": 0.308, "bullets": ["Modelo BSD dc-blend-v1: Stade Rennais 44.3% · Empate 24.9% · Olympique de Marseille 30.8%", "xG 1.70 – 1.61 (media 3.31) · marcador más probable 1-1", "BTTS 63.5% · Over 2.5 61.5% · Over 3.5 40.7%"], "analysis": "Menos de 3.5 @ 1.60. Media de goles 3.31 y 1-1 como línea base. El libro está un poco más agresivo que el modelo; se publica porque es el mercado ≥ 1.50 más limpio.", "rejected": "Se descarta Over 2.5 no se publica por default (regla cuota mínima 1.50).", "homeCrest": "https://media.api-sports.io/football/teams/94.png", "awayCrest": "https://media.api-sports.io/football/teams/81.png", "homeScore": null, "awayScore": null, "minute": null}, {"id": "bsd-213568", "league": "La Liga", "leagueKey": "esp", "kickoff": "2026-09-11T19:00:00Z", "status": "notstarted", "home": "Sevilla", "away": "Valencia", "market": "Menos de 2.5", "marketKey": "ou", "odds": 1.6, "impliedPct": 62.5, "modelPct": 58.8, "evPct": -5.9, "conf": 52, "pH": 0.436, "pD": 0.298, "pA": 0.266, "bullets": ["Modelo BSD dc-blend-v1: Sevilla 43.6% · Empate 29.8% · Valencia 26.6%", "xG 1.43 – 1.19 (media 2.62) · marcador más probable 1-1", "BTTS 47.8% · Over 2.5 41.2% · Over 3.5 22.9%", "H2H 107 pj · media 2.38 goles · 39-24-44"], "analysis": "Menos de 2.5 @ 1.60. Media de goles 2.62 y 1-1 como línea base. El libro está un poco más agresivo que el modelo; se publica porque es el mercado ≥ 1.50 más limpio.", "rejected": "Se descarta Over 2.5 no se publica por default (regla cuota mínima 1.50).", "homeCrest": "https://media.api-sports.io/football/teams/536.png", "awayCrest": "https://media.api-sports.io/football/teams/532.png", "homeScore": null, "awayScore": null, "minute": null}, {"id": "bsd-223705", "league": "Liga Profesional", "leagueKey": "arg", "kickoff": "2026-09-11T20:00:00Z", "status": "notstarted", "home": "Newell's Old Boys", "away": "Vélez Sarsfield", "market": "Más de 1.5", "marketKey": "ou", "odds": 1.5, "impliedPct": 66.7, "modelPct": 62.5, "evPct": -6.2, "conf": 52, "pH": 0.353, "pD": 0.318, "pA": 0.33, "bullets": ["Modelo BSD dc-blend-v1: Newell's Old Boys 35.3% · Empate 31.8% · Vélez Sarsfield 33.0%", "xG 0.97 – 1.14 (media 2.11) · marcador más probable 1-1", "BTTS 44.3% · Over 2.5 36.3% · Over 3.5 18.2%", "H2H 26 pj · media 1.96 goles · 11-5-10"], "analysis": "Más de 1.5 @ 1.50. Media de goles 2.11 y 1-1 como línea base. El libro está un poco más agresivo que el modelo; se publica porque es el mercado ≥ 1.50 más limpio.", "rejected": "Se descarta Over 2.5 no se publica por default (regla cuota mínima 1.50).", "homeCrest": "https://media.api-sports.io/football/teams/457.png", "awayCrest": "https://media.api-sports.io/football/teams/438.png", "homeScore": null, "awayScore": null, "minute": null}, {"id": "bsd-223699", "league": "Liga Profesional", "leagueKey": "arg", "kickoff": "2026-09-11T22:15:00Z", "status": "notstarted", "home": "Defensa y Justicia", "away": "Gimnasia y Esgrima Mendoza", "market": "Menos de 2.5", "marketKey": "ou", "odds": 1.61, "impliedPct": 62.1, "modelPct": 58.1, "evPct": -6.5, "conf": 52, "pH": 0.42100000000000004, "pD": 0.289, "pA": 0.289, "bullets": ["Modelo BSD dc-blend-v1: Defensa y Justicia 42.1% · Empate 28.9% · Gimnasia y Esgrima Mendoza 28.9%", "xG 1.39 – 1.11 (media 2.50) · marcador más probable 1-1", "BTTS 48.2% · Over 2.5 41.9% · Over 3.5 22.2%"], "analysis": "Menos de 2.5 @ 1.61. Media de goles 2.50 y 1-1 como línea base. El libro está un poco más agresivo que el modelo; se publica porque es el mercado ≥ 1.50 más limpio.", "rejected": "Se descarta Over 2.5 no se publica por default (regla cuota mínima 1.50).", "homeCrest": "https://media.api-sports.io/football/teams/442.png", "awayCrest": "https://media.api-sports.io/football/teams/10620.png", "homeScore": null, "awayScore": null, "minute": null}, {"id": "bsd-7258", "league": "Brasileirão", "leagueKey": "bra", "kickoff": "2026-09-12T00:00:00Z", "status": "notstarted", "home": "Coritiba", "away": "Athletico", "market": "Menos de 2.5", "marketKey": "ou", "odds": 1.53, "impliedPct": 65.4, "modelPct": 60.7, "evPct": -7.1, "conf": 52, "pH": 0.34700000000000003, "pD": 0.306, "pA": 0.34700000000000003, "bullets": ["Modelo BSD dc-blend-v1: Coritiba 34.7% · Empate 30.6% · Athletico 34.7%", "xG 1.26 – 1.25 (media 2.51) · marcador más probable 1-1", "BTTS 47.1% · Over 2.5 39.3% · Over 3.5 21.9%", "H2H 32 pj · media 1.78 goles · 9-10-13"], "analysis": "Menos de 2.5 @ 1.53. Media de goles 2.51 y 1-1 como línea base. El libro está un poco más agresivo que el modelo; se publica porque es el mercado ≥ 1.50 más limpio.", "rejected": "Se descarta Over 2.5 no se publica por default (regla cuota mínima 1.50).", "homeCrest": "https://media.api-sports.io/football/teams/147.png", "awayCrest": "https://media.api-sports.io/football/teams/134.png", "homeScore": null, "awayScore": null, "minute": null}];
+const GENERATED = "2026-09-10T00:05:31.315480+00:00";
 const TZ = "America/Argentina/Buenos_Aires";
 function ymd(iso){return new Date(iso).toLocaleDateString("en-CA",{timeZone:TZ});}
 function today(){return new Date().toLocaleDateString("en-CA",{timeZone:TZ});}
@@ -170,53 +333,57 @@ function clock(iso){
   return new Date(iso).toLocaleString("es-AR",{timeZone:TZ,day:"2-digit",month:"short",hour:"numeric",minute:"2-digit"});
 }
 function live(p){return p.status && p.status!=="notstarted" && p.status!=="finished";}
+function phase(p){return p.status==="finished"?"done":(!p.status||p.status==="notstarted")?"pending":"live";}
 function confL(c){return c>=78?"Máxima":c>=72?"Alta":"Media";}
 function esc(t){
   t=String(t==null?"":t);
   return t.replace(/&/g,"&"+"amp;").replace(/</g,"&"+"lt;").replace(/>/g,"&"+"gt;").replace(/"/g,"&"+"quot;");
 }
 function initials(n){return n.split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]).join("").toUpperCase();}
-function crest(name,src,cls){
-  if(src) return '<img class="esc" src="'+esc(src)+'" alt="" onerror="this.outerHTML=this.nextElementSibling.outerHTML"/><span class="esc-fb" style="display:none">'+esc(initials(name))+'</span>';
-  return '<span class="esc-fb">'+esc(initials(name))+'</span>';
+function crest(name,src,size){
+  const cls=size||"";
+  const fb='<span class="esc-fb '+cls+'">'+esc(initials(name))+'</span>';
+  if(!src) return fb;
+  return '<img class="esc '+cls+'" src="'+esc(src)+'" alt="" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"/><span class="esc-fb '+cls+'" style="display:none">'+esc(initials(name))+'</span>';
 }
-function mid(p){
+function mid(p,big){
   if(live(p) && p.homeScore!=null && p.awayScore!=null){
-    return '<div class="score">'+p.homeScore+"-"+p.awayScore+"</div>";
+    return '<div class="score live">'+p.homeScore+"–"+p.awayScore+"</div>";
   }
   return '<div class="vs">VS</div>';
 }
-function card(p){
+function card(p, featured){
   const when = bucket(p.kickoff)==="hoy"?"Hoy":bucket(p.kickoff)==="manana"?"Mañana":"";
   const time = (when?when+" · ":"")+clock(p.kickoff);
   const liveTag = live(p)?'<span class="live-tag">En vivo'+(p.minute?" "+p.minute+"'":"")+"</span>":"";
+  const max = p.conf>=78;
   const ev = p.evPct!==0?'<span class="ev '+(p.evPct>0?"pos":"")+'">EV '+(p.evPct>0?"+":"")+p.evPct+"%</span>":"";
-  const max = p.conf>=78?'<span class="maxb">Máx</span>':"";
-  const share = "https://t.me/share/url?url="+encodeURIComponent(location.href)+"&text="+encodeURIComponent("Predicciones Pro · "+p.league+"\\n"+p.home+" vs "+p.away+"\\n"+p.market+" @ "+p.odds.toFixed(2));
-  const bullets = (p.bullets||[]).map(b=>"<li>"+esc(b)+"</li>").join("");
-  return '<article class="card '+(p.conf>=78?"max":"")+'" data-id="'+esc(p.id)+'">'
-    +'<button type="button" class="tog" style="all:unset;display:block;width:100%;cursor:pointer">'
-    +'<div class="meta"><span>'+esc(p.league)+" · "+esc(time)+"</span>"+liveTag+"</div>"
+  const share = "https://t.me/share/url?url="+encodeURIComponent(location.href)+"&text="+encodeURIComponent("Predicciones Pro · "+p.league+" | "+p.home+" vs "+p.away+" | "+p.market+" @ "+Number(p.odds).toFixed(2));
+  const bullets = (p.bullets||[]).slice(0,3).map(b=>"<li>"+esc(b)+"</li>").join("");
+  const sz = featured?"lg":"";
+  return '<article class="card '+(max?"max":"")+'">'
+    +'<button type="button" class="tog">'
+    +'<div class="meta"><span>'+esc(p.league)+" · "+esc(time)+'</span><span style="display:flex;gap:8px;align-items:center">'+(max?'<span class="maxb">MÁX</span>':"")+liveTag+"</span></div>"
     +'<div class="match">'
-    +'<div class="team">'+crest(p.home,p.homeCrest)+'<span class="tname">'+esc(p.home)+"</span></div>"
+    +'<div class="team">'+crest(p.home,p.homeCrest,sz)+'<span class="tname">'+esc(p.home)+"</span></div>"
     +'<div style="text-align:center">'+mid(p)+"</div>"
-    +'<div class="team">'+crest(p.away,p.awayCrest)+'<span class="tname">'+esc(p.away)+"</span></div>"
+    +'<div class="team">'+crest(p.away,p.awayCrest,sz)+'<span class="tname">'+esc(p.away)+"</span></div>"
     +"</div>"
-    +'<div class="rec"><span class="mkt">'+esc(p.market)+'</span><span class="cuota"><small>cuota</small><b>'+p.odds.toFixed(2)+"</b></span></div>"
-    +'<div class="foot"><span>'+max+esc(confL(p.conf))+" "+ev+'</span><span>Ver análisis ▾</span></div>'
+    +'<div class="rec"><span class="mkt">'+esc(p.market)+'</span><span class="cuota"><small>cuota</small><b>'+Number(p.odds).toFixed(2)+"</b></span></div>"
+    +'<div class="foot"><span>'+esc(confL(p.conf))+ev+'</span><span class="more-lab">Ver análisis ▾</span></div>'
     +"</button>"
     +'<div class="more">'
-    +'<div class="nums"><div><span>Modelo</span><b>'+p.modelPct+'%</b></div><div><span>Implícita</span><b style="color:var(--fg)">'+p.impliedPct+'%</b></div><div><span>Confianza</span><b style="color:var(--fg)">'+p.conf+"</b></div></div>"
-    +'<div class="bar"><div class="bar-l"><span>Local '+Math.round(p.pH*100)+'%</span><span>Empate '+Math.round(p.pD*100)+'%</span><span>Visitante '+Math.round(p.pA*100)+'%</span></div>'
+    +'<div class="nums"><div><span>Modelo</span><b style="color:var(--primary)">'+p.modelPct+'%</b></div><div><span>Implícita</span><b>'+p.impliedPct+'%</b></div><div><span>Confianza</span><b>'+p.conf+"</b></div></div>"
+    +'<div class="bar"><div class="bar-l"><span>1 '+Math.round(p.pH*100)+'%</span><span>X '+Math.round(p.pD*100)+'%</span><span>2 '+Math.round(p.pA*100)+'%</span></div>'
     +'<div class="bar-g"><i style="width:'+(p.pH*100)+'%"></i><i style="width:'+(p.pD*100)+'%"></i><i style="width:'+(p.pA*100)+'%"></i></div></div>'
     +'<ul class="bul">'+bullets+"</ul>"
-    +'<p class="why"><b>Por qué este pick. </b>'+esc(p.analysis)+"</p>"
+    +'<p class="why">'+esc(p.analysis)+"</p>"
     +'<p class="rej">'+esc(p.rejected)+"</p>"
     +'<a class="share" href="'+share+'" target="_blank" rel="noreferrer">Compartir en Telegram</a>'
     +"</div></article>";
 }
 
-let dayF="hoy", liveOnly=false, evOnly=false;
+let dayF="hoy", liveOnly=false, evOnly=false, lgF="all", mkF="all", cfF="all";
 function list(){
   return PICKS.filter(p=>{
     const b=bucket(p.kickoff);
@@ -225,6 +392,11 @@ function list(){
     if(dayF==="finde" && !weekend(p.kickoff)) return false;
     if(liveOnly && !live(p)) return false;
     if(evOnly && p.evPct<=0) return false;
+    if(lgF!=="all" && p.leagueKey!==lgF) return false;
+    if(mkF!=="all" && p.marketKey!==mkF) return false;
+    if(cfF==="max" && p.conf<78) return false;
+    if(cfF==="alta" && (p.conf<72 || p.conf>=78)) return false;
+    if(cfF==="media" && p.conf>=72) return false;
     return true;
   });
 }
@@ -234,34 +406,94 @@ function featured(){
   if(!pool.length) return null;
   return pool.slice().sort((a,b)=>b.conf-a.conf)[0];
 }
+function bindToggles(root){
+  root.querySelectorAll(".card .tog").forEach(btn=>{
+    btn.onclick=()=>{
+      const art=btn.closest(".card");
+      art.classList.toggle("open");
+      const lab=btn.querySelector(".more-lab");
+      if(lab) lab.textContent = art.classList.contains("open")?"Ocultar ▴":"Ver análisis ▾";
+    };
+  });
+}
 function render(){
   document.getElementById("st-hoy").textContent = PICKS.filter(p=>bucket(p.kickoff)==="hoy").length;
   document.getElementById("st-live").textContent = PICKS.filter(live).length;
   document.getElementById("st-total").textContent = PICKS.length;
   const f=featured();
-  document.getElementById("feat").innerHTML = f?card(f):"";
+  const feat=document.getElementById("feat");
+  feat.innerHTML = f?card(f,true):"";
+  bindToggles(feat);
   const L=list();
-  document.getElementById("grid").innerHTML = L.length?L.map(card).join(""):'<p class="empty">No hay picks ≥ 1.50 para este filtro.</p>';
-  document.getElementById("stamp").textContent = "Snapshot BSD · "+new Date(GENERATED).toLocaleString("es-AR")+" · cuota mínima 1.50 · sin stakes.";
-  document.querySelectorAll(".card .tog").forEach(btn=>{
-    btn.onclick=()=>{
-      const art=btn.closest(".card");
-      art.classList.toggle("open");
-      const lab=btn.querySelector(".foot span:last-child");
-      if(lab) lab.textContent = art.classList.contains("open")?"Ocultar ▴":"Ver análisis ▾";
-    };
-  });
+  const grid=document.getElementById("grid");
+  grid.innerHTML = L.length?L.map(p=>card(p,false)).join(""):'<p class="empty">No hay picks ≥ 1.50 para este filtro. Probá Todos o apagá Solo EV+.</p>';
+  bindToggles(grid);
+  document.getElementById("stamp").textContent = "BSD · "+new Date(GENERATED).toLocaleTimeString("es-AR")+" · min 1.50";
+
+  const pend=PICKS.filter(p=>phase(p)==="pending").length;
+  const liv=PICKS.filter(p=>phase(p)==="live").length;
+  const done=PICKS.filter(p=>phase(p)==="done").length;
+  document.getElementById("tb-pend").textContent=pend;
+  document.getElementById("tb-live").textContent=liv;
+  document.getElementById("tb-done").textContent=done;
+  document.getElementById("board").innerHTML = PICKS.slice(0,12).map(p=>{
+    const ph=phase(p);
+    const lab=ph==="live"?"En vivo":ph==="done"?"Final":"Por jugar";
+    const has=p.homeScore!=null && p.awayScore!=null;
+    const midTxt=has?(p.homeScore+"–"+p.awayScore):"vs";
+    return '<li>'
+      +'<div class="pair">'+crest(p.home,p.homeCrest,"sm")+crest(p.away,p.awayCrest,"sm")+"</div>"
+      +'<div class="info"><p>'+esc(p.home)+' <span style="color:var(--muted);font-weight:500">'+midTxt+"</span> "+esc(p.away)+"</p>"
+      +"<small>"+esc(p.market)+" · "+Number(p.odds).toFixed(2)+"</small></div>"
+      +'<span style="flex-shrink:0;font-size:12px;font-weight:600;color:'+(ph==="live"?"var(--danger)":"var(--muted)")+'">'+lab+"</span>"
+      +"</li>";
+  }).join("");
 }
-document.querySelectorAll("#days .chip").forEach(ch=>{
+document.querySelectorAll("#days [data-day]").forEach(ch=>{
   ch.onclick=()=>{
-    if(ch.dataset.live){ liveOnly=!liveOnly; ch.classList.toggle("on", liveOnly); render(); return; }
-    if(ch.dataset.ev){ evOnly=!evOnly; ch.classList.toggle("on", evOnly); render(); return; }
     document.querySelectorAll("#days [data-day]").forEach(x=>x.classList.remove("on"));
     ch.classList.add("on");
     dayF=ch.dataset.day;
     render();
   };
 });
+document.getElementById("liveBtn").onclick=function(){ liveOnly=!liveOnly; this.classList.toggle("on", liveOnly); render(); };
+document.getElementById("evBtn").onclick=function(){ evOnly=!evOnly; this.classList.toggle("on", evOnly); render(); };
+document.getElementById("lg").onchange=function(){ lgF=this.value; render(); };
+document.getElementById("mk").onchange=function(){ mkF=this.value; render(); };
+document.getElementById("cf").onchange=function(){ cfF=this.value; render(); };
+document.getElementById("ham").onclick=function(){ document.getElementById("drawer").classList.toggle("on"); };
+document.querySelectorAll("#drawer a").forEach(a=>a.onclick=()=>document.getElementById("drawer").classList.remove("on"));
+
+const chat=document.getElementById("chat"), chatb=document.getElementById("chatb");
+document.getElementById("fab").onclick=()=>chat.classList.toggle("on");
+document.getElementById("chatx").onclick=()=>chat.classList.remove("on");
+function addMsg(t,w){ const d=document.createElement("div"); d.className="msg "+w; d.textContent=t; chatb.appendChild(d); chatb.scrollTop=chatb.scrollHeight; }
+function answer(q){
+  const t=q.toLowerCase();
+  const top=PICKS.slice().sort((a,b)=>b.conf-a.conf).slice(0,4);
+  if(/hoy|mejor|top|pick/.test(t)){
+    return "Picks con más confianza:\n"+top.map(p=>"• "+p.home+" vs "+p.away+": "+p.market+" @ "+p.odds+" (EV "+(p.evPct>0?"+":"")+p.evPct+"%)").join("\n");
+  }
+  if(/1\.50|cuota|mínim/.test(t)) return "Solo se publican mercados ≥ 1.50. Por eso no ves Bayern @ 1.10 o Palmeiras @ 1.25.";
+  for(const p of PICKS){
+    if(t.indexOf(p.home.toLowerCase().slice(0,5))>=0 || t.indexOf(p.away.toLowerCase().slice(0,5))>=0){
+      return p.home+" vs "+p.away+": "+p.market+" @ "+p.odds+". "+p.analysis;
+    }
+  }
+  if(/ev|valor/.test(t)) return "EV compara la probabilidad del modelo BSD con 1/cuota. Si el modelo está por encima, hay valor. No es garantía.";
+  return "Preguntame por un partido o por qué no va el 1 corto.";
+}
+function send(){
+  const inp=document.getElementById("chati");
+  const q=inp.value.trim();
+  if(!q) return;
+  inp.value="";
+  addMsg(q,"user");
+  addMsg(answer(q),"bot");
+}
+document.getElementById("chats").onclick=send;
+document.getElementById("chati").addEventListener("keydown",e=>{ if(e.key==="Enter") send(); });
 render();
 </script>
 </body>
