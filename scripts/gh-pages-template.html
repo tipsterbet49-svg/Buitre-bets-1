@@ -187,7 +187,7 @@ h1 span{color:var(--primary)}
   <div class="hero-copy">
     <p class="live"><span class="dot"></span> En línea · modelo BSD</p>
     <h1>Predicciones<span> Pro</span></h1>
-    <p class="sub">Pronósticos de fútbol. Un pick por partido.</p>
+    <p class="sub">Pronósticos de fútbol. Un pick por partido ≥ 1.40.</p>
     <div class="stats">
       <div class="stat"><strong id="st-hoy">-</strong><small>Picks hoy</small></div>
       <div class="stat"><strong id="st-live">-</strong><small>En vivo</small></div>
@@ -201,13 +201,13 @@ h1 span{color:var(--primary)}
 <div class="page">
   <section class="sec feat" id="destacado">
     <h2>Destacado</h2>
-    <p class="hint">El de más confianza entre los que todavía no se juegan.</p>
+    <p class="hint">El de hoy con más confianza.</p>
     <div id="feat" style="margin-top:1.2rem"></div>
   </section>
 
   <section class="sec" id="picks">
     <h2>Picks</h2>
-    <p class="hint">Tocá un partido para ver el análisis.</p>
+    <p class="hint">Los de hoy primero. Mañana, los de mañana.</p>
     <div class="filters" id="days">
       <button class="chip on" data-day="hoy" type="button">Hoy</button>
       <button class="chip" data-day="manana" type="button">Mañana</button>
@@ -240,6 +240,8 @@ h1 span{color:var(--primary)}
           <option value="1x2">1X2</option>
           <option value="btts">BTTS</option>
           <option value="ou">Goles</option>
+          <option value="ah">Hándicap</option>
+          <option value="corners">Córners</option>
         </select>
       </label>
       <label class="sel"><span>Confianza</span>
@@ -268,9 +270,9 @@ h1 span{color:var(--primary)}
   <section class="sec" id="como">
     <h2>Cómo se arma</h2>
     <div class="steps">
-      <div class="step"><p class="n">01</p><h3>Modelo BSD</h3><p>1X2, xG, BTTS y goles. Un mercado por partido.</p></div>
-      <div class="step"><p class="n">02</p><h3>Cuota</h3><p>EV = modelo × cuota − 1. Se publica el mercado más limpio ≥ 1.50.</p></div>
-      <div class="step"><p class="n">03</p><h3>Regla 1.50</h3><p>Nada de favoritos a 1.10. Over 2.5 no entra automático.</p></div>
+      <div class="step"><p class="n">01</p><h3>Qué mira</h3><p>Modelo BSD, cuota BetWinner, forma, tabla, córners y árbitro.</p></div>
+      <div class="step"><p class="n">02</p><h3>El pick</h3><p>Uno solo. Si el modelo va a Over 10.5, publicamos 8.5/9.5 para acertar más.</p></div>
+      <div class="step"><p class="n">03</p><h3>Piso 1.40</h3><p>Nada a 1.10. Over 2.5 no entra automático.</p></div>
     </div>
     <p class="stamp">+18 · Educativo. No es consejo financiero.</p>
   </section>
@@ -280,7 +282,7 @@ h1 span{color:var(--primary)}
   <div class="fg">
     <div>
       <p class="t">Predicciones<span style="color:var(--primary)"> Pro</span></p>
-      <p style="margin-top:12px;max-width:16rem">Picks con modelo BSD. Cuota mínima 1.50.</p>
+      <p style="margin-top:12px;max-width:16rem">Picks con modelo BSD. Cuota mínima 1.40.</p>
     </div>
     <div>
       <h4>Secciones</h4>
@@ -305,7 +307,7 @@ h1 span{color:var(--primary)}
 <div class="chat" id="chat">
   <div class="chat-h"><span>Asistente</span><button type="button" id="chatx" style="background:none;border:0;color:var(--muted);font-size:18px">✕</button></div>
   <div class="chat-b" id="chatb"><div class="msg bot">Asistente de picks. Preguntame por un partido o por qué se descartó un favorito corto.</div></div>
-  <div class="chat-f"><input id="chati" placeholder="Ej: Palmeiras o cuota 1.50"/><button type="button" id="chats">Enviar</button></div>
+  <div class="chat-f"><input id="chati" placeholder="Ej: Boca o cuota 1.40"/><button type="button" id="chats">Enviar</button></div>
 </div>
 
 <script>
@@ -334,53 +336,34 @@ function clock(iso){
 }
 function live(p){return p.status && p.status!=="notstarted" && p.status!=="finished";}
 function phase(p){return p.status==="finished"?"done":(!p.status||p.status==="notstarted")?"pending":"live";}
-function confL(c){return c>=78?"Máxima":c>=72?"Alta":"Media";}
-function esc(t){
-  t=String(t==null?"":t);
-  return t.replace(/&/g,"&"+"amp;").replace(/</g,"&"+"lt;").replace(/>/g,"&"+"gt;").replace(/"/g,"&"+"quot;");
-}
-function initials(n){return n.split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]).join("").toUpperCase();}
-function crest(name,src,size){
-  const cls=size||"";
-  const fb='<span class="esc-fb '+cls+'">'+esc(initials(name))+'</span>';
-  if(!src) return fb;
-  return '<img class="esc '+cls+'" src="'+esc(src)+'" alt="" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"/><span class="esc-fb '+cls+'" style="display:none">'+esc(initials(name))+'</span>';
-}
-function mid(p,big){
-  if(live(p) && p.homeScore!=null && p.awayScore!=null){
-    return '<div class="score live">'+p.homeScore+"–"+p.awayScore+"</div>";
-  }
-  return '<div class="vs">VS</div>';
+function confL(c){return c>=78?"Fuerte":c>=72?"Clara":"Jugada";}
+function whyOf(p){
+  if(p.why) return p.why;
+  const m=(p.market||"").toLowerCase();
+  if(m.indexOf("córner")>=0 && p.cornersAvgHome!=null) return "Hay córners, línea accesible. "+p.home+" promedia "+p.cornersAvgHome+" córners, "+p.away+" "+p.cornersAvgAway+".";
+  const media=((p.xgHome||0)+(p.xgAway||0)).toFixed(1);
+  if(m.indexOf("menos de")>=0) return "Partido trabado, para pocos goles. Media "+media+" goles.";
+  if(m.indexOf("ambos")>=0) return "Los dos llegan al arco. Media "+media+" goles.";
+  if(m.indexOf("hándicap")>=0) return "Hay que darle metros a un lado.";
+  return p.analysis||p.market;
 }
 function card(p, featured){
   const when = bucket(p.kickoff)==="hoy"?"Hoy":bucket(p.kickoff)==="manana"?"Mañana":"";
   const time = (when?when+" · ":"")+clock(p.kickoff);
   const liveTag = live(p)?'<span class="live-tag">En vivo'+(p.minute?" "+p.minute+"'":"")+"</span>":"";
   const max = p.conf>=78;
-  const ev = p.evPct!==0?'<span class="ev '+(p.evPct>0?"pos":"")+'">EV '+(p.evPct>0?"+":"")+p.evPct+"%</span>":"";
-  const share = "https://t.me/share/url?url="+encodeURIComponent(location.href)+"&text="+encodeURIComponent("Predicciones Pro · "+p.league+" | "+p.home+" vs "+p.away+" | "+p.market+" @ "+Number(p.odds).toFixed(2));
-  const bullets = (p.bullets||[]).slice(0,3).map(b=>"<li>"+esc(b)+"</li>").join("");
   const sz = featured?"lg":"";
   return '<article class="card '+(max?"max":"")+'">'
-    +'<button type="button" class="tog">'
-    +'<div class="meta"><span>'+esc(p.league)+" · "+esc(time)+'</span><span style="display:flex;gap:8px;align-items:center">'+(max?'<span class="maxb">MÁX</span>':"")+liveTag+"</span></div>"
+    +'<div class="meta"><span>'+esc(p.league)+" · "+esc(time)+'</span><span style="display:flex;gap:8px;align-items:center">'+(max?'<span class="maxb">Fuerte</span>':"")+liveTag+"</span></div>"
     +'<div class="match">'
     +'<div class="team">'+crest(p.home,p.homeCrest,sz)+'<span class="tname">'+esc(p.home)+"</span></div>"
     +'<div style="text-align:center">'+mid(p)+"</div>"
     +'<div class="team">'+crest(p.away,p.awayCrest,sz)+'<span class="tname">'+esc(p.away)+"</span></div>"
     +"</div>"
-    +'<div class="rec"><span class="mkt">'+esc(p.market)+'</span><span class="cuota"><small>cuota</small><b>'+Number(p.odds).toFixed(2)+"</b></span></div>"
-    +'<div class="foot"><span>'+esc(confL(p.conf))+ev+'</span><span class="more-lab">Ver análisis ▾</span></div>'
-    +"</button>"
-    +'<div class="more">'
-    +'<div class="nums"><div><span>Modelo</span><b style="color:var(--primary)">'+p.modelPct+'%</b></div><div><span>Implícita</span><b>'+p.impliedPct+'%</b></div><div><span>Confianza</span><b>'+p.conf+"</b></div></div>"
-    +'<div class="bar"><div class="bar-l"><span>1 '+Math.round(p.pH*100)+'%</span><span>X '+Math.round(p.pD*100)+'%</span><span>2 '+Math.round(p.pA*100)+'%</span></div>'
-    +'<div class="bar-g"><i style="width:'+(p.pH*100)+'%"></i><i style="width:'+(p.pD*100)+'%"></i><i style="width:'+(p.pA*100)+'%"></i></div></div>'
-    +'<ul class="bul">'+bullets+"</ul>"
-    +'<p class="why">'+esc(p.analysis)+"</p>"
-    +'<p class="rej">'+esc(p.rejected)+"</p>"
-    +'<a class="share" href="'+share+'" target="_blank" rel="noreferrer">Compartir en Telegram</a>'
-    +"</div></article>";
+    +'<div class="rec"><span class="mkt">'+esc(p.market)+'</span><span class="cuota"><small>BetWinner</small><b>'+Number(p.odds).toFixed(2)+"</b></span></div>"
+    +'<p class="why">'+esc(whyOf(p))+"</p>"
+    +'<div class="foot"><span>'+esc(confL(p.conf))+"</span></div>"
+    +"</article>";
 }
 
 let dayF="hoy", liveOnly=false, evOnly=false, lgF="all", mkF="all", cfF="all";
@@ -401,20 +384,13 @@ function list(){
   });
 }
 function featured(){
-  const up=PICKS.filter(p=>p.status==="notstarted");
-  const pool=up.length?up:PICKS.slice();
+  const open=p=>p.status==="notstarted";
+  const hoy=PICKS.filter(p=>open(p)&&bucket(p.kickoff)==="hoy");
+  const man=PICKS.filter(p=>open(p)&&bucket(p.kickoff)==="manana");
+  const rest=PICKS.filter(open);
+  const pool=hoy.length?hoy:man.length?man:rest.length?rest:PICKS.slice();
   if(!pool.length) return null;
   return pool.slice().sort((a,b)=>b.conf-a.conf)[0];
-}
-function bindToggles(root){
-  root.querySelectorAll(".card .tog").forEach(btn=>{
-    btn.onclick=()=>{
-      const art=btn.closest(".card");
-      art.classList.toggle("open");
-      const lab=btn.querySelector(".more-lab");
-      if(lab) lab.textContent = art.classList.contains("open")?"Ocultar ▴":"Ver análisis ▾";
-    };
-  });
 }
 function render(){
   document.getElementById("st-hoy").textContent = PICKS.filter(p=>bucket(p.kickoff)==="hoy").length;
@@ -423,12 +399,10 @@ function render(){
   const f=featured();
   const feat=document.getElementById("feat");
   feat.innerHTML = f?card(f,true):"";
-  bindToggles(feat);
-  const L=list();
+  const L=list().filter(p=>!f || p.id!==f.id);
   const grid=document.getElementById("grid");
-  grid.innerHTML = L.length?L.map(p=>card(p,false)).join(""):'<p class="empty">No hay picks ≥ 1.50 para este filtro. Probá Todos o apagá Solo EV+.</p>';
-  bindToggles(grid);
-  document.getElementById("stamp").textContent = "BSD · "+new Date(GENERATED).toLocaleTimeString("es-AR")+" · min 1.50";
+  grid.innerHTML = L.length?L.map(p=>card(p,false)).join(""):'<p class="empty">No hay picks ≥ 1.40 para este filtro. Probá Todos o apagá Solo EV+.</p>';
+  document.getElementById("stamp").textContent = "BSD · "+new Date(GENERATED).toLocaleTimeString("es-AR")+" · min 1.40";
 
   const pend=PICKS.filter(p=>phase(p)==="pending").length;
   const liv=PICKS.filter(p=>phase(p)==="live").length;
@@ -448,6 +422,23 @@ function render(){
       +'<span style="flex-shrink:0;font-size:12px;font-weight:600;color:'+(ph==="live"?"var(--danger)":"var(--muted)")+'">'+lab+"</span>"
       +"</li>";
   }).join("");
+}
+function esc(t){
+  t=String(t==null?"":t);
+  return t.replace(/&/g,"&"+"amp;").replace(/</g,"&"+"lt;").replace(/>/g,"&"+"gt;").replace(/"/g,"&"+"quot;");
+}
+function initials(n){return n.split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]).join("").toUpperCase();}
+function crest(name,src,size){
+  const cls=size||"";
+  const fb='<span class="esc-fb '+cls+'">'+esc(initials(name))+'</span>';
+  if(!src) return fb;
+  return '<img class="esc '+cls+'" src="'+esc(src)+'" alt="" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"/><span class="esc-fb '+cls+'" style="display:none">'+esc(initials(name))+'</span>';
+}
+function mid(p,big){
+  if(live(p) && p.homeScore!=null && p.awayScore!=null){
+    return '<div class="score live">'+p.homeScore+"–"+p.awayScore+"</div>";
+  }
+  return '<div class="vs">VS</div>';
 }
 document.querySelectorAll("#days [data-day]").forEach(ch=>{
   ch.onclick=()=>{
@@ -475,7 +466,7 @@ function answer(q){
   if(/hoy|mejor|top|pick/.test(t)){
     return "Picks con más confianza:\n"+top.map(p=>"• "+p.home+" vs "+p.away+": "+p.market+" @ "+p.odds+" (EV "+(p.evPct>0?"+":"")+p.evPct+"%)").join("\n");
   }
-  if(/1\.50|cuota|mínim/.test(t)) return "Solo se publican mercados ≥ 1.50. Por eso no ves Bayern @ 1.10 o Palmeiras @ 1.25.";
+  if(/1\.40|1\.50|cuota|mínim/.test(t)) return "Solo se publican mercados ≥ 1.40. Por eso no ves Bayern @ 1.10.";
   for(const p of PICKS){
     if(t.indexOf(p.home.toLowerCase().slice(0,5))>=0 || t.indexOf(p.away.toLowerCase().slice(0,5))>=0){
       return p.home+" vs "+p.away+": "+p.market+" @ "+p.odds+". "+p.analysis;

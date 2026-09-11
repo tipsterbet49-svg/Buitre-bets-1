@@ -12,7 +12,9 @@ from pathlib import Path
 from urllib.request import Request, urlopen
 
 ROOT = Path("/workspace")
-TOKEN = "0f5fef6dd4e24408e6a468ea76656d13300ad804"
+TOKEN = (Path("/workspace/.env").read_text().split("BSD_API_TOKEN=")[-1].split()[0].strip() if (Path("/workspace/.env")).exists() else "")
+if not TOKEN:
+    TOKEN = __import__("os").environ.get("BSD_API_TOKEN", "")
 BASE = "https://sports.bzzoiro.com/api/v2"
 MIN_ODDS = 1.5
 ALLOWED = {
