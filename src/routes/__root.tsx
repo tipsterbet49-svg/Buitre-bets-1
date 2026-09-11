@@ -13,7 +13,7 @@ export const Route = createRootRoute({
       { title: APP_NAME },
       {
         name: "description",
-        content: "Picks de fútbol con modelo BSD. Cuota mínima 1.50. Sin favoritos cortos.",
+        content: "Picks de fútbol con modelo BSD. Cuota mínima 1.40. Sin favoritos cortos.",
       },
       { name: "theme-color", content: "#0f0f0f" },
     ],

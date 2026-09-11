@@ -97,7 +97,7 @@ export function PickCard({ p }: { p: PickItem }) {
 
       <div className="flex items-center justify-between gap-3 border-t border-border pt-3">
         <div>
-          <p className="text-xs font-bold uppercase tracking-wide text-muted">Pick (cuota ≥ 1.50)</p>
+          <p className="text-xs font-bold uppercase tracking-wide text-muted">Pick (cuota ≥ 1.40)</p>
           <p className="text-sm font-extrabold">{p.market}</p>
         </div>
         <div className="rounded-lg border border-primary/40 bg-primary/10 px-3 py-1.5 text-xl font-black text-primary">
@@ -157,7 +157,7 @@ export function PickCard({ p }: { p: PickItem }) {
           </span>
         ))}
         <span className="rounded border border-primary/30 bg-primary/10 px-1.5 py-0.5 text-xs font-bold text-primary">
-          min 1.50
+          min 1.40
         </span>
       </div>
 

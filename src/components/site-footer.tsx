@@ -7,7 +7,7 @@ export function SiteFooter() {
             Predicciones<span className="text-primary"> Pro</span>
           </p>
           <p className="mt-3 max-w-xs text-sm leading-relaxed text-muted">
-            Picks con modelo BSD. Cuota mínima 1.50.
+            Picks con modelo BSD. Cuota mínima 1.40.
           </p>
         </div>
         <div>

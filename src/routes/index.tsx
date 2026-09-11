@@ -40,14 +40,24 @@ const LEAGUES: Array<[LeagueKey | "all", string]> = [
 const MARKETS: Array<[MarketKey | "all", string]> = [
   ["all", "Todos"],
   ["1x2", "1X2"],
+  ["dc", "Doble op."],
+  ["dnb", "DNB"],
   ["btts", "BTTS"],
   ["ou", "Goles"],
+  ["ah", "Hándicap"],
+  ["corners", "Córners"],
+  ["cards", "Tarjetas"],
 ];
 
 function pickPhase(status: string): "live" | "pending" | "done" {
   if (status === "finished") return "done";
   if (!status || status === "notstarted") return "pending";
   return "live";
+}
+
+function hasMarket(p: PickItem, key: MarketKey) {
+  if (p.marketKey === key) return true;
+  return (p.alts ?? []).some((a) => a.marketKey === key);
 }
 
 function BoardSkeleton() {
@@ -116,7 +126,9 @@ function FilterSelect({
 function Home() {
   const payload = Route.useLoaderData();
   const picks = payload.picks as PickItem[];
-  const [day, setDay] = useState<DayF>("hoy");
+  const hoyN = picks.filter((p) => dayBucket(p.kickoff) === "hoy").length;
+  const manN = picks.filter((p) => dayBucket(p.kickoff) === "manana").length;
+  const [day, setDay] = useState<DayF>(hoyN > 0 ? "hoy" : manN > 0 ? "manana" : "all");
   const [league, setLeague] = useState<LeagueKey | "all">("all");
   const [market, setMarket] = useState<MarketKey | "all">("all");
   const [conf, setConf] = useState<ConfF>("all");
@@ -130,7 +142,7 @@ function Home() {
       if (day === "manana" && b !== "manana") return false;
       if (day === "finde" && !isWeekend(p.kickoff)) return false;
       if (league !== "all" && p.leagueKey !== league) return false;
-      if (market !== "all" && p.marketKey !== market) return false;
+      if (market !== "all" && !hasMarket(p, market)) return false;
       if (conf === "max" && p.conf < 78) return false;
       if (conf === "alta" && (p.conf < 72 || p.conf >= 78)) return false;
       if (conf === "media" && p.conf >= 72) return false;
@@ -141,9 +153,11 @@ function Home() {
     });
   }, [picks, day, league, market, conf, state, evOnly]);
 
-  const hoyN = picks.filter((p) => dayBucket(p.kickoff) === "hoy").length;
   const liveN = picks.filter((p) => pickPhase(p.status) === "live").length;
+  const marketsN = picks.reduce((n, p) => n + 1 + (p.alts?.length ?? 0), 0);
   const featured = pickFeatured(picks);
+  const live = payload.source === "bsd" && !payload.error;
+  const grid = featured ? filtered.filter((p) => p.id !== featured.id) : filtered;
 
   return (
     <div className="min-h-screen bg-bg pb-28 text-fg antialiased">
@@ -152,18 +166,20 @@ function Home() {
       <section className="mx-auto flex max-w-6xl flex-col items-center gap-8 px-4 pt-8 pb-8 md:flex-row md:items-center md:justify-between">
         <div className="order-2 w-full min-w-0 flex-1 md:order-1">
           <p className="mb-3 flex items-center gap-2 text-xs font-semibold tracking-wide text-muted">
-            <span className="live-dot" />
-            En línea · modelo BSD
+            <span className={live ? "live-dot" : "size-2 rounded-full bg-muted"} />
+            {live ? "En línea · modelo BSD" : "Tablero en caché · se actualiza a las 21:00"}
           </p>
           <h1 className="max-w-xl text-4xl font-black tracking-tight md:text-5xl">
             Predicciones<span className="text-primary"> Pro</span>
           </h1>
-          <p className="mt-2 text-base font-medium text-muted">Pronósticos de fútbol. Un pick por partido.</p>
+          <p className="mt-2 text-base font-medium text-muted">
+            Pronósticos de fútbol. Un pick por partido ≥ 1.40.
+          </p>
 
           <div className="mt-6 flex max-w-lg overflow-hidden rounded-xl bg-card shadow-[var(--shadow-border)]">
             <Stat n={hoyN} label="Picks hoy" />
             <Stat n={liveN} label="En vivo" />
-            <Stat n={picks.length} label="Total" last />
+            <Stat n={marketsN} label="Mercados" last />
           </div>
 
           <a
@@ -188,7 +204,7 @@ function Home() {
 
         <section id="picks" className="scroll-mt-20">
           <h2 className="text-2xl font-semibold tracking-tight">Picks</h2>
-          <p className="mt-1 text-sm text-muted">Tocá un partido para ver el análisis.</p>
+          <p className="mt-1 text-sm text-muted">Los de hoy primero. Mañana, los de mañana.</p>
 
           <div className="mt-5 flex flex-wrap gap-2">
             {(
@@ -238,18 +254,18 @@ function Home() {
           </div>
 
           {payload.error && (
-            <p className="mt-4 rounded-xl bg-danger/10 px-3 py-2 text-xs text-danger">
-              BSD no respondió ({payload.error}). Mostrando tablero de respaldo.
+            <p className="mt-4 rounded-xl bg-card px-3 py-2 text-xs text-muted shadow-[var(--shadow-border)]">
+              {payload.error} Mostrando el último tablero armado.
             </p>
           )}
 
-          {filtered.length === 0 ? (
+          {grid.length === 0 && !(featured && day === "hoy") ? (
             <p className="py-16 text-center text-muted">
-              No hay picks ≥ 1.50 para este filtro. Probá Todos o apagá Solo EV+.
+              No hay picks ≥ 1.40 para este filtro. Probá Todos o apagá Solo EV+.
             </p>
           ) : (
             <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-              {filtered.map((p) => (
+              {grid.map((p) => (
                 <PickRow key={p.id} p={p} />
               ))}
             </div>
@@ -257,7 +273,8 @@ function Home() {
 
           <p className="mt-6 flex items-start gap-2 text-xs text-muted">
             <RefreshCw className="mt-0.5 size-3.5 shrink-0" />
-            BSD · {new Date(payload.generatedAt).toLocaleTimeString("es-AR")} · min 1.50
+            BSD · {new Date(payload.generatedAt).toLocaleTimeString("es-AR")} · min 1.40 · {marketsN}{" "}
+            mercados
           </p>
         </section>
 
@@ -266,14 +283,16 @@ function Home() {
         <section id="como" className="scroll-mt-20">
           <h2 className="text-2xl font-semibold tracking-tight">Cómo se arma</h2>
           <div className="mt-5 grid gap-3 sm:grid-cols-3">
-            <Step n="01" title="Modelo BSD">
-              1X2, xG, BTTS y goles. Un mercado por partido.
+            <Step n="01" title="Qué mira">
+              Modelo BSD (1X2, xG, BTTS, goles, córners), cuota BetWinner, forma, tabla, córners
+              recientes y el árbitro (amarillas por partido).
             </Step>
-            <Step n="02" title="Cuota">
-              EV = modelo × cuota − 1. Se publica el mercado más limpio ≥ 1.50.
+            <Step n="02" title="El pick">
+              Uno solo, con línea accesible: si el modelo va a Over 10.5 córners, publicamos 8.5 o
+              9.5 para acertar más.
             </Step>
-            <Step n="03" title="Regla 1.50">
-              Nada de favoritos a 1.10. Over 2.5 no entra automático.
+            <Step n="03" title="Sin favoritos cortos">
+              Piso 1.40. Nada a 1.10. Over 2.5 no entra automático.
             </Step>
           </div>
           <p className="mt-5 text-xs text-muted">+18 · Educativo. No es consejo financiero.</p>
@@ -328,6 +347,7 @@ function BoardSection({ picks }: { picks: PickItem[] }) {
                 </p>
                 <p className="truncate text-xs text-accent">
                   {p.market} · {p.odds.toFixed(2)}
+                  {p.alts?.length ? ` · +${p.alts.length}` : ""}
                 </p>
               </div>
               <p
@@ -350,7 +370,7 @@ function BoardSection({ picks }: { picks: PickItem[] }) {
 function Stat({ n, label, last }: { n: number | string; label: string; last?: boolean }) {
   return (
     <div className={`flex-1 px-3 py-4 text-center ${last ? "" : "border-r border-border"}`}>
-      <p className="text-xl font-extrabold tabular-nums tracking-tight">{n}</p>
+      <p className="text-xl font-extrabold tracking-tight tabular-nums">{n}</p>
       <p className="mt-1 text-xs font-medium text-muted">{label}</p>
     </div>
   );

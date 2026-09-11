@@ -12,23 +12,35 @@ function localAnswer(q: string, picks: PickItem[]) {
       top
         .map(
           (p) =>
-            `• ${p.home} vs ${p.away}: ${p.market} @ ${p.odds} (EV ${p.evPct > 0 ? "+" : ""}${p.evPct}%)`,
+            `• ${p.home} vs ${p.away}: ${p.market} @ ${p.odds} (EV ${p.evPct > 0 ? "+" : ""}${p.evPct}%)` +
+            (p.alts?.[0] ? ` · alt ${p.alts[0].market} @ ${p.alts[0].odds}` : ""),
         )
         .join("\n")
     );
   }
   if (/1\.50|cuota|mínim/.test(t)) {
-    return "Solo se publican mercados ≥ 1.50. Por eso no ves Bayern @ 1.10 o Palmeiras @ 1.25.";
+    return "Solo se publican mercados ≥ 1.40. Por eso no ves Bayern @ 1.10.";
+  }
+  if (/córner|corner|handicap|hándicap|dnb|doble/.test(t)) {
+    return "Un pick por partido. Si el modelo va a Over 10.5 córners, publicamos una línea más accesible (8.5/9.5) para subir el acierto. BTTS No entra cuando el partido lo pide.";
+  }
+  if (/forma|tabla|pinnacle|1xbet|betwinner|movim/.test(t)) {
+    return "En cada partido está la forma de los últimos 5, la posición de tabla, el xG de temporada y si la cuota acorta o deriva. La cuota de referencia es BetWinner.";
   }
   for (const p of picks) {
     if (t.includes(p.home.toLowerCase().slice(0, 5)) || t.includes(p.away.toLowerCase().slice(0, 5))) {
-      return `${p.home} vs ${p.away}: ${p.market} @ ${p.odds}. ${p.analysis}`;
+      const alts = (p.alts ?? [])
+        .slice(0, 4)
+        .map((a) => `${a.market} @ ${a.odds}`)
+        .join(" · ");
+      const form = p.formHome && p.formAway ? ` Forma ${p.formHome}–${p.formAway}.` : "";
+      return `${p.home} vs ${p.away}: ${p.market} @ ${p.odds}. ${p.analysis}${form}${alts ? `\nMás mercados: ${alts}` : ""}`;
     }
   }
   if (/ev|valor/.test(t)) {
     return "EV compara la probabilidad del modelo BSD con 1/cuota. Si el modelo está por encima, hay valor. No es garantía.";
   }
-  return "Preguntame por un partido o por qué no va el 1 corto.";
+  return "Preguntame por un partido, por córners/hándicap o por qué no va el 1 corto.";
 }
 
 export function Assistant({ picks }: { picks: PickItem[] }) {
@@ -38,7 +50,7 @@ export function Assistant({ picks }: { picks: PickItem[] }) {
   const [msgs, setMsgs] = useState<{ who: "bot" | "user"; text: string }[]>([
     {
       who: "bot",
-      text: "Asistente de picks. Preguntame por un partido o por qué se descartó un favorito corto.",
+      text: "Asistente de picks. Preguntame por un partido, un mercado extra o por qué se descartó un favorito corto.",
     },
   ]);
 
